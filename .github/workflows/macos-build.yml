@@ -1,0 +1,82 @@
+name: macOS build
+
+# Verifies that HexEditor builds and starts on macOS, using the pinned SOUI
+# version plus the framework patches in patches/ (the same reproduce path
+# the READMEs document for Linux). Windows and Linux are verified locally
+# by the author; this workflow is the macOS verification route.
+#
+# The configure flags mirror SOUI's own CI (soui4/soui build.yml, macOS
+# arm64 leg): macos-14 runner, clang, Ninja, PNG hardware optimizations off.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build-macos:
+    name: Build on macOS (arm64)
+    runs-on: macos-14
+    steps:
+      - name: Checkout HexEditor
+        uses: actions/checkout@v4
+
+      - name: Fetch pinned SOUI (8a96e07) + swinx (992753b)
+        shell: bash
+        run: |
+          git init soui4
+          git -C soui4 remote add origin https://github.com/soui4/soui.git
+          git -C soui4 fetch --depth 1 origin 8a96e0745cdb7a01cecb8e26e00321b5f3a48c46
+          git -C soui4 checkout FETCH_HEAD
+          # .gitmodules points swinx at Gitee; rewrite it to the GitHub
+          # mirror, the same trick SOUI's own CI uses.
+          git config --global url."https://github.com/soui4/swinx".insteadOf "https://gitee.com/setoutsoft/swinx"
+          git -C soui4 submodule update --init swinx
+          echo "swinx at: $(git -C soui4/swinx rev-parse HEAD)"
+
+      - name: Apply framework patches
+        shell: bash
+        run: |
+          git -C soui4 apply "$GITHUB_WORKSPACE/patches/soui4-8a96e07-local.patch"
+          git -C soui4/swinx apply "$GITHUB_WORKSPACE/patches/swinx-992753b-local.patch"
+          git -C soui4 status --short
+
+      - name: Install dependencies (Homebrew)
+        run: brew install ninja pkgconf glfw glew openssl@3
+
+      - name: Configure CMake (macOS arm64)
+        shell: bash
+        run: |
+          cmake -S . -B build-macos -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_OSX_ARCHITECTURES=arm64 \
+            -DCMAKE_C_COMPILER=/usr/bin/clang \
+            -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
+            -DPNG_HARDWARE_OPTIMIZATIONS=OFF \
+            -DOPENSSL_ROOT_DIR="$(brew --prefix openssl@3)"
+
+      - name: Build
+        run: cmake --build build-macos --parallel
+
+      - name: Check artifacts
+        shell: bash
+        run: |
+          ls -la build-macos/bin/
+          file build-macos/bin/HexEditor
+
+      - name: Smoke run (10 s)
+        continue-on-error: true
+        shell: bash
+        run: |
+          head -c 1048576 /dev/urandom > /tmp/test.bin
+          cd build-macos/bin
+          ./HexEditor /tmp/test.bin &
+          APP_PID=$!
+          sleep 10
+          if kill -0 $APP_PID 2>/dev/null; then
+            echo "SMOKE OK: HexEditor still running after 10 s"
+            kill $APP_PID
+          else
+            wait $APP_PID
+            echo "SMOKE: HexEditor exited early with code $?"
+          fi
