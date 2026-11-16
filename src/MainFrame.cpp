@@ -2715,10 +2715,13 @@ void CMainFrame::OnActFileProperties()
     SStringT msg;
     SStringT fmt = I18n::T(L"路径:\t%s\n\n大小:\t%llu 字节\n原始大小:\t%llu 字节\n")
                  + I18n::T(L"修改状态:\t%s\n只读:\t%s\n每行字节数:\t%d\n字符集:\t%s");
+    // 注意：Format 是可变参数函数，实参不会做隐式类型转换，必须显式 .c_str() 传指针。
+    // 直接传 SStringW 对象在 MSVC/GCC 下靠对象布局"碰巧能用"，clang 会直接报错
+    // (cannot pass object of non-trivial type through variadic method)。
     msg.Format(fmt,
                pM->Path(), (unsigned long long)pM->Size(),
-               (unsigned long long)pM->OriginalSize(), pM->IsModified() ? I18n::T(L"已修改") : I18n::T(L"未修改"),
-               pM->IsReadOnly() ? I18n::T(L"是") : I18n::T(L"否"), m_pHex ? m_pHex->GetBytesPerRow() : 16,
+               (unsigned long long)pM->OriginalSize(), (pM->IsModified() ? I18n::T(L"已修改") : I18n::T(L"未修改")).c_str(),
+               (pM->IsReadOnly() ? I18n::T(L"是") : I18n::T(L"否")).c_str(), m_pHex ? m_pHex->GetBytesPerRow() : 16,
                kCharset[cs]);
     SMessageBox(m_hWnd, msg, I18n::T(L"文件属性"), MB_OK | MB_ICONINFORMATION);
 }
