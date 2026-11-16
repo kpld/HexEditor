@@ -6,8 +6,9 @@ An HxD-style hex editor built with [SOUI4](https://github.com/soui4/soui) (a cro
 The UI and rendering run entirely on SOUI's widget tree, while the logic layer (file model, search, undo stack) depends on no platform API at all,
 so Windows / Linux / macOS share the exact same code base.
 
-Build and run have been verified on **Windows 11 x64 (MSVC 2022)** and **Ubuntu 24.04**. Other platforms go through the `swinx` adaptation layer;
-the source tree is organized for cross-platform builds, and macOS has not been tested yet (see "Known limitations" at the end).
+Build and run have been verified on **Windows 11 x64 (MSVC 2022)** and **Ubuntu 24.04**; **macOS (arm64)** is verified to build and
+launch by this repo's GitHub Actions workflow (see Section 4), though it has not had a hands-on interactive check on a real Mac yet.
+Other platforms go through the `swinx` adaptation layer; the source tree is organized for cross-platform builds.
 
 ---
 
@@ -208,6 +209,28 @@ Two more patches were made at the framework layer (swinx, platform-specific file
 `SetMenuItemInfo` now handles `MIIM_FTYPE`/`MIIM_STATE` (otherwise `MF_OWNERDRAW` is lost and menus fall back to default painting);
 and both the default menu painting branch and cairo's `TextLayoutEx` handle `\t`.
 
+### macOS Build (arm64, verified via GitHub Actions)
+
+macOS is verified by `.github/workflows/macos-build.yml` on every push: it fetches the pinned SOUI + swinx,
+applies the `patches/` patches, builds with clang/Ninja, and runs a 10 s launch smoke test.
+To reproduce locally on a Mac:
+
+```bash
+brew install ninja pkgconf glfw glew openssl@3
+# clone SOUI into soui4/, check out the pinned commits and apply both patches (see the pin note above)
+cmake -S . -B build-macos -G Ninja -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_OSX_ARCHITECTURES=arm64 \
+  -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
+  -DPNG_HARDWARE_OPTIMIZATIONS=OFF \
+  -DOPENSSL_ROOT_DIR="$(brew --prefix openssl@3)"
+cmake --build build-macos --parallel
+```
+
+Two portability fixes came out of this verification: the project requires **C++17**
+(`std::shared_ptr<u8[]>` subscripting in the file model — libc++ rejects it in C++11 mode even though
+MSVC/libstdc++ let it slide), and string objects must not be passed through variadic functions
+(`SStringT::Format` arguments need `.c_str()`; clang errors where MSVC/GCC only worked by layout luck).
+
 ---
 
 ## 5. Design Notes
@@ -314,7 +337,7 @@ and both the default menu painting branch and cairo's `TextLayoutEx` handle `\t`
 * Non-Windows platforms: Ubuntu 24.04 is verified to build and run — menus / toolbar / find & replace / About / data inspector /
   dark & light themes / Chinese–English switching / context menus have all been checked. File dialogs on Linux go through swinx's
   `GetOpenFileNameW` / `GetSaveFileNameW` (xdg-desktop-portal or zenity, see Section 4); the clipboard on non-Windows platforms still falls back to an in-process buffer.
-  macOS has not been tested yet.
+  macOS (arm64) builds and launches under CI (GitHub Actions, 10 s smoke run); interactive use on a real Mac has not been checked yet.
 * A 32-bit process cannot map a >2 GB file as a whole (address-space limit of Windows' `MapViewOfFile`);
   this needs a segmented mapping window. 64-bit targets are unaffected.
 * No character-set switching yet (the ASCII view uses a fixed Latin-1 printability test), no diff highlighting, no bookmarks.

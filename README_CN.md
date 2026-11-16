@@ -4,8 +4,9 @@
 界面与渲染全部走 SOUI 控件树，逻辑层（文件模型、检索、撤销栈）不依赖任何平台 API，
 因此在 Windows / Linux / macOS 上共用同一份代码。
 
-当前在 Windows x64 (MSVC 2022) 上完成构建与运行验证；其他平台使用 `swinx` 适配层，
-源码已按跨平台组织，尚未在 macOS/Linux 上实测（见文末「已知限制」）。
+当前已在 Windows 11 x64 (MSVC 2022) 与 Ubuntu 24.04 上完成构建与运行验证；macOS（arm64）
+已通过本仓库的 GitHub Actions 工作流验证编译与启动（尚无真机交互实测）；其他平台使用 `swinx` 适配层，
+源码已按跨平台组织。
 
 ---
 
@@ -193,6 +194,26 @@ sudo apt install zenity
 `SetMenuItemInfo` 补上 `MIIM_FTYPE`/`MIIM_STATE`（否则 `MF_OWNERDRAW` 丢失，
 菜单退回默认绘制）；菜单默认绘制分支与 cairo 的 `TextLayoutEx` 都加了 `\t` 处理。
 
+### macOS 构建（arm64，已通过 GitHub Actions 验证）
+
+macOS 由 `.github/workflows/macos-build.yml` 在每次推送时验证：拉取锁定版 SOUI + swinx、
+打 `patches/` 补丁、用 clang/Ninja 编译，并做 10 秒启动冒烟测试。在 Mac 上本地复现：
+
+```bash
+brew install ninja pkgconf glfw glew openssl@3
+# 把 SOUI 克隆到 soui4/，切到锁定版本并打上两个补丁（见上方版本锁定说明）
+cmake -S . -B build-macos -G Ninja -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_OSX_ARCHITECTURES=arm64 \
+  -DCMAKE_C_COMPILER=/usr/bin/clang -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
+  -DPNG_HARDWARE_OPTIMIZATIONS=OFF \
+  -DOPENSSL_ROOT_DIR="$(brew --prefix openssl@3)"
+cmake --build build-macos --parallel
+```
+
+这次验证顺带修了两个可移植性问题：本工程需要 **C++17**（文件模型里 `std::shared_ptr<u8[]>`
+的下标用法 — libc++ 在 C++11 模式下会拒绝，MSVC/libstdc++ 则是宽容放行）；字符串对象不能
+直接传给可变参数函数（`SStringT::Format` 的实参要 `.c_str()`，clang 会报错，MSVC/GCC 只是靠对象布局碰巧能用）。
+
 ---
 
 ## 5. 设计要点
@@ -300,9 +321,10 @@ sudo apt install zenity
 
 ## 6. 已知限制 / 后续工作
 
-* 非 Windows 平台（Ubuntu 24.04）已实测可编译运行：菜单/工具栏/查找替换/关于/数据检查器/
-  深色浅色主题/中英文切换/右键菜单均已验证；文件打开对话框在非 Windows 下仍退回
-  「命令行参数传入路径」，剪贴板退回进程内缓冲区。需要接入 GTK/Qt 或 Cocoa 的文件选择器。
+* 非 Windows 平台：Ubuntu 24.04 已实测可编译运行：菜单/工具栏/查找替换/关于/数据检查器/
+  深色浅色主题/中英文切换/右键菜单均已验证；Linux 文件对话框走 swinx 的 `GetOpenFileNameW` /
+  `GetSaveFileNameW`（xdg-desktop-portal 或 zenity，见第 4 节），剪贴板在非 Windows 下仍退回进程内缓冲区。
+  macOS（arm64）已通过 GitHub Actions 验证编译与启动（10 秒冒烟运行），尚无真机交互实测。
 * 32 位进程无法整体映射 >2 GB 文件（Windows 的 `MapViewOfFile` 地址空间限制），
   需要改成「分段映射窗口」；64 位目标不受影响。
 * 暂无字符集切换（ASCII 视图固定按 Latin-1 可打印判定）、无差异高亮、无书签。
