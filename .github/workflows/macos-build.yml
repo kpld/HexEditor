@@ -59,7 +59,30 @@ jobs:
             -DOPENSSL_ROOT_DIR="$(brew --prefix openssl@3)"
 
       - name: Build
-        run: cmake --build build-macos --parallel
+        shell: bash
+        run: |
+          set -o pipefail
+          cmake --build build-macos --parallel 2>&1 | tee build-full.log
+
+      # The run's log files need a GitHub login to read; mirror the error
+      # lines into annotations and the job summary so a failed run explains
+      # itself on the public run page.
+      - name: Surface build errors (on failure)
+        if: failure()
+        shell: bash
+        run: |
+          echo '## Build errors' >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          grep -E 'error:|FAILED:|undefined symbol|ld: ' build-full.log | head -40 >> "$GITHUB_STEP_SUMMARY" || true
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          grep -E 'error:|FAILED:' build-full.log | head -20 | sed 's/%/%25/g' | while IFS= read -r line; do echo "::error::$line"; done || true
+
+      - name: Upload build log (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-build-log
+          path: build-full.log
 
       - name: Check artifacts
         shell: bash
