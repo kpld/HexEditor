@@ -84,12 +84,14 @@ endif()
 
 # 与 SOUI4 各动态库输出到同一目录，运行期可直接加载
 set(_HEX_OUT_DIR ${CMAKE_BINARY_DIR}/bin)
+# 本工程需要 C++17：HexFileModel 用 std::shared_ptr<u8[]> 的下标运算符（C++17 起才提供）。
+# MSVC / libstdc++ 在 C++11 模式下宽容放行，libc++（macOS/clang）严格按标准会直接报错。
 set_target_properties(HexEditor PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${_HEX_OUT_DIR}
     RUNTIME_OUTPUT_DIRECTORY_RELEASE ${_HEX_OUT_DIR}
     RUNTIME_OUTPUT_DIRECTORY_DEBUG ${_HEX_OUT_DIR}
     RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${_HEX_OUT_DIR}
-    CXX_STANDARD 11
+    CXX_STANDARD 17
     CXX_STANDARD_REQUIRED ON
 )
 
@@ -179,7 +181,7 @@ set_target_properties(hexeditor-test PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${_HEX_OUT_DIR}
     RUNTIME_OUTPUT_DIRECTORY_RELEASE ${_HEX_OUT_DIR}
     RUNTIME_OUTPUT_DIRECTORY_DEBUG ${_HEX_OUT_DIR}
-    CXX_STANDARD 11
+    CXX_STANDARD 17
     CXX_STANDARD_REQUIRED ON)
 else()
     message(STATUS "tools/test_model.cpp not found, skipping the hexeditor-test target")
