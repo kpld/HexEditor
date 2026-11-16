@@ -89,6 +89,9 @@ jobs:
         run: |
           ls -la build-macos/bin/
           file build-macos/bin/HexEditor
+          # Logs need a login to read; mirror the key facts into annotations
+          # so they are visible on the public run page.
+          echo "::notice::ARTIFACT: $(file -b build-macos/bin/HexEditor), $(stat -f%z build-macos/bin/HexEditor) bytes"
 
       - name: Smoke run (10 s)
         continue-on-error: true
@@ -100,9 +103,9 @@ jobs:
           APP_PID=$!
           sleep 10
           if kill -0 $APP_PID 2>/dev/null; then
-            echo "SMOKE OK: HexEditor still running after 10 s"
+            echo "::notice::SMOKE OK: HexEditor still running after 10 s"
             kill $APP_PID
           else
             wait $APP_PID
-            echo "SMOKE: HexEditor exited early with code $?"
+            echo "::warning::SMOKE: HexEditor exited early with code $?"
           fi
