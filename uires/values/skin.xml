@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<skin>
+  <!-- 标题栏窗口控制按钮（colorrect：纯色三态，不依赖图片资源） -->
+  <colorrect name="skin_caption_btn" cornerRadius="2"
+             normal="rgba(0,0,0,0)" normalBorder="rgba(0,0,0,0)"
+             hover="#e9edf2" hoverBorder="#dbe2ea"
+             pushdown="#dbe4ef" pushdownBorder="#c6d2de"
+             disable="#f0f0f0" disableBorder="#e0e0e0"/>
+  <!-- 关闭按钮 hover 态带红 -->
+  <colorrect name="skin_caption_close" cornerRadius="2"
+             normal="rgba(0,0,0,0)" normalBorder="rgba(0,0,0,0)"
+             hover="#e81123" hoverBorder="#e81123"
+             pushdown="#c50f1f" pushdownBorder="#c50f1f"
+             disable="#f0f0f0" disableBorder="#e0e0e0"/>
+  <!-- 工具栏按钮 -->
+  <colorrect name="skin_tb_btn" cornerRadius="3"
+             normal="rgba(0,0,0,0)" normalBorder="rgba(0,0,0,0)"
+             hover="#e9f1fb" hoverBorder="#bcd8f5"
+             pushdown="#d6e8fa" pushdownBorder="#a8cdf0"
+             disable="rgba(0,0,0,0)" disableBorder="rgba(0,0,0,0)"/>
+
+  <!-- 查找 / 替换浮窗的普通按钮：浅色 / 深色两套（colorrect 三态，不依赖图片）。
+       默认 SOUI 系统按钮皮肤是浅色的，深色模式下会是一排刺眼的白按钮，
+       所以这里显式给一套可随主题切换的皮肤，由 CFindWnd::ApplyTheme 换用。 -->
+  <colorrect name="skin_find_btn" cornerRadius="3"
+             normal="#eef2f7" normalBorder="#c3cfdc"
+             hover="#e4eefa" hoverBorder="#b0ccee"
+             pushdown="#d6e6f8" pushdownBorder="#9cc4ec"
+             disable="#f0f0f0" disableBorder="#e0e0e0"/>
+  <colorrect name="skin_find_btn_dark" cornerRadius="3"
+             normal="#333337" normalBorder="#4a4a4f"
+             hover="#3f3f45" hoverBorder="#5a5a61"
+             pushdown="#2a2a2e" pushdownBorder="#6a6a72"
+             disable="#2a2a2e" disableBorder="#3a3a3e"/>
+
+  <!-- 标题栏应用图标（SVG，Skia 下 HICON 的 DrawIconEx 画不出来，改用位图/矢量） -->
+  <imglist name="skin_app_icon" src="svg:app_icon" states="1" />
+
+  <!-- ======================= 深色主题 ======================= -->
+  <!-- 标签页：选中态走 PushDown（STabCtrl::OnPaint 对当前页用 WndState_PushDown） -->
+  <colorrect name="skin_tab_dark" cornerRadius="0"
+             normal="#2D2D30" normalBorder="rgba(0,0,0,0)"
+             hover="#3A3A3D" hoverBorder="rgba(0,0,0,0)"
+             pushdown="#1E1E1E" pushdownBorder="rgba(0,0,0,0)"
+             disable="#2D2D30" disableBorder="rgba(0,0,0,0)"/>
+  <!-- 下拉框箭头（浅色字形，深色底可见） -->
+  <imglist name="skin_dropbtn_dark" src="svg:dropbtn_dark" states="3"/>
+  <!-- 弹出菜单（SMenuEx）：条目底 / 分隔线 / 勾选 / 子菜单箭头。
+       目前 menubar 没开 useMenuEx（下拉仍是原生菜单），这 4 个皮肤暂时未使用，
+       预留给「把 smenu XML 的 <item> 改成 <menuItem> 格式后切 SMenuEx」时用。 -->
+  <imgframe name="skin_menu_dark" src="svg:menu_skin_dark" states="2" margin="26,2,5,2"/>
+  <imgframe name="skin_menu_sep_dark" src="svg:menu_sep_dark" left="26"/>
+  <imglist name="skin_menu_check_dark" src="svg:menu_check_dark" states="3"/>
+  <imglist name="skin_menu_arrow_dark" src="svg:menu_arrow_dark" states="2"/>
+  <!-- 深色滚动条：复用 SOUI 深色系统资源里的同款 SVG 精灵图（仅配色变深），
+       运行期给 hexview 设 sbSkin 即生效。 -->
+  <scrollbar name="skin_sb_dark" src="svg:scrollbar_dark" margin="3" hasgripper="0"/>
+</skin>

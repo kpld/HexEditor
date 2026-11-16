@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 查找 / 替换 / 转到：独立非模态浮窗（owner = 主窗口）。
+     与数据检查器同一套 SHostWnd + 自绘 caption 模式；不带停靠逻辑。
+     配色不写死在 XML 里：根窗口用 colorBkgnd（不用 _skin.sys.wnd.bkgnd 浅色皮肤），
+     各控件由 CFindWnd::ApplyTheme 按浅色/深色主题下发颜色与按钮皮肤。 -->
+<SOUI name="findWnd" title="查找 / 替换" resizable="0" wndType="normal"
+      width="470" height="236" margin="4,4,4,4" minsize="470,236" sendWheel2Hover="1">
+  <root colorBkgnd="#ffffff" layout="vbox" interval="2" inset="1,1,1,1">
+    <caption name="caption" size="-2,28" layout="hbox" gravity="center" interval="6" padding="8,0,0,0"
+             colorBkgnd="#eef1f5">
+      <text name="txt_title" size="-1,-1" colorText="#1f2937" font="size:13">查找 / 替换</text>
+      <window size="-1,-1" weight="1"/>
+      <button name="btn_close" size="36,28" focusable="0" skin="skin_caption_close"
+              font="face:Segoe MDL2 Assets,size:10" colorText="#3a3f45" tip="关闭">&#xE8BB;</button>
+    </caption>
+    <hr name="hr0" height="1" colorLine="#d0d7de"/>
+
+    <window name="content" size="-2,-2" weight="1" layout="vbox" interval="7" padding="10,8,10,8">
+      <window size="-2,26" layout="hbox" interval="6" gravity="center">
+        <text name="lbl_find" width="66" colorText="#404040">查找:</text>
+        <edit name="edit_find" weight="1" height="24"
+              cueText="文本；HEX 模式按字节对输入，如 4D 5A"/>
+        <button name="btn_hex" width="52" height="24" skin="skin_find_btn"
+                tip="切换 文本 / 十六进制 查找">HEX</button>
+      </window>
+
+      <window size="-2,26" layout="hbox" interval="6" gravity="center">
+        <text name="lbl_replace" width="66" colorText="#404040">替换:</text>
+        <edit name="edit_replace" weight="1" height="24"
+              cueText="替换为（留空表示删除匹配内容）"/>
+      </window>
+
+      <window size="-2,26" layout="hbox" interval="6" gravity="center">
+        <text name="lbl_goto" width="66" colorText="#404040">转到:</text>
+        <edit name="edit_goto" weight="1" height="24" cueText="偏移，支持 0x 十六进制"/>
+        <button name="btn_goto" width="52" height="24" skin="skin_find_btn">转到</button>
+      </window>
+
+      <window size="-2,30" layout="hbox" interval="6" gravity="center">
+        <button name="btn_find_prev" width="84" height="26" skin="skin_find_btn">上一个</button>
+        <button name="btn_find_next" width="64" height="26" skin="skin_find_btn">下一个</button>
+        <button name="btn_replace" width="76" height="26" skin="skin_find_btn">替换</button>
+        <button name="btn_replace_all" width="96" height="26" skin="skin_find_btn">全部替换</button>
+        <window weight="1"/>
+        <button name="btn_close2" width="68" height="26" skin="skin_find_btn">关闭</button>
+      </window>
+
+      <text name="txt_status" size="-2,18" colorText="#6b7280" font="size:12"></text>
+    </window>
+  </root>
+</SOUI>

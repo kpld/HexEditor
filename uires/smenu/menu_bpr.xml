@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menuRoot iconSkin="" itemHeight="26" iconMargin="4" textMargin="8" maxWidth="200">
+  <menuItem id="24576">8</menuItem>
+  <menuItem id="24577">16</menuItem>
+  <menuItem id="24578">24</menuItem>
+  <menuItem id="24579">32</menuItem>
+  <menuItem id="24580">48</menuItem>
+  <menuItem id="24581">64</menuItem>
+  <menuItem id="24582">128</menuItem>
+  <menuItem id="24583">256</menuItem>
+  <menuItem id="24584">512</menuItem>
+  <menuItem id="24585">1024</menuItem>
+  <menuItem id="24586">2048</menuItem>
+  <menuItem id="24587">4096</menuItem>
+</menuRoot>

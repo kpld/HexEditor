@@ -1,0 +1,6 @@
+<menuRoot iconSkin="" itemHeight="26" iconMargin="4" textMargin="8" maxWidth="260">
+  <menuItem id="5001">最小化(&amp;N)</menuItem>
+  <menuItem id="5002">最大化/还原(&amp;X)</menuItem>
+  <sep/>
+  <menuItem id="5003">关闭(&amp;C)&#9;Ctrl+W</menuItem>
+</menuRoot>

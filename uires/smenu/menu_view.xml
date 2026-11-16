@@ -1,0 +1,18 @@
+<menuRoot iconSkin="" itemHeight="26" iconMargin="4" textMargin="8" maxWidth="260">
+  <menuItem id="3001">每行 16 字节</menuItem>
+  <menuItem id="3002">每行 24 字节</menuItem>
+  <menuItem id="3003">每行 32 字节</menuItem>
+  <menuItem id="3004">每行 48 字节</menuItem>
+  <sep/>
+  <menuItem id="3005" check="1">显示数据检查器(&amp;I)</menuItem>
+  <menuItem id="3006" check="1">显示状态栏(&amp;S)</menuItem>
+  <menuItem id="3007" check="1">显示工具栏(&amp;T)</menuItem>
+  <sep/>
+  <menuItem id="3008">字符集(&amp;C)...</menuItem>
+  <sep/>
+  <menuItem id="3009">浅色主题(&amp;L)</menuItem>
+  <menuItem id="3010">深色主题(&amp;D)</menuItem>
+  <sep/>
+  <menuItem id="3011" check="1">中文(&amp;C)</menuItem>
+  <menuItem id="3012">English(&amp;E)</menuItem>
+</menuRoot>

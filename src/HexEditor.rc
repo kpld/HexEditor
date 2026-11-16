@@ -1,0 +1,11 @@
+// HexEditor executable icon resource
+#define IDI_APPICON 101
+IDI_APPICON ICON "app_icon.ico"
+
+// 应用清单：声明 supportedOS（Win10/11）。
+// uxtheme 的暗色菜单开关（SetPreferredAppMode）依赖这个声明——没有它，
+// Windows 会把进程当成 Win7 时代的老程序，暗色 API 直接被忽略。
+// 链接器侧用 /MANIFEST:NO 关掉自动生成的清单，只保留这一份。
+// 注意类型必须写数字 24（RT_MANIFEST）：rc.exe 不认识未定义的宏名，
+// 会把它当成字符串资源名（和之前 IDI_APPICON 那次是同一个坑）。
+1 24 "app.manifest"

@@ -1,0 +1,5 @@
+<menuRoot iconSkin="" itemHeight="26" iconMargin="4" textMargin="8" maxWidth="260">
+  <menuItem id="6002">快捷键一览(&amp;K)...</menuItem>
+  <sep/>
+  <menuItem id="6001">关于 HexEditor(&amp;A)...</menuItem>
+</menuRoot>

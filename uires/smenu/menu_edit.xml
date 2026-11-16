@@ -1,0 +1,15 @@
+<menuRoot iconSkin="" itemHeight="26" iconMargin="4" textMargin="8" maxWidth="260">
+  <menuItem id="2001">撤销(&amp;U)&#9;Ctrl+Z</menuItem>
+  <menuItem id="2002">重做(&amp;R)&#9;Ctrl+Y</menuItem>
+  <sep/>
+  <menuItem id="2003">剪切(&amp;T)&#9;Ctrl+X</menuItem>
+  <menuItem id="2004">复制(&amp;C)&#9;Ctrl+C</menuItem>
+  <menuItem id="2005">粘贴(&amp;P)&#9;Ctrl+V</menuItem>
+  <menuItem id="2006">删除(&amp;L)&#9;Del</menuItem>
+  <menuItem id="2007">插入字节(&amp;I)&#9;Ins</menuItem>
+  <sep/>
+  <menuItem id="2008">全选(&amp;A)&#9;Ctrl+A</menuItem>
+  <sep/>
+  <menuItem id="2009" check="1">插入模式(&amp;M)</menuItem>
+  <menuItem id="2010">填充选区(&amp;F)...</menuItem>
+</menuRoot>

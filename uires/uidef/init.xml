@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UIDEF>
+  <font size="15" name="default"/>
+
+  <string src="values:string" />
+  <skin src="values:skin"/>
+  <color src="values:color"/>
+
+  <style>
+    <class name="cls_btn" colorText="#333333" textMode="0x25" cursor="hand"/>
+    <class name="cls_text" colorText="#404040"/>
+    <class name="cls_mono" font="face:Consolas,bold:0" colorText="#1f3864"/>
+  </style>
+
+  <objattr>
+    <!-- 按钮默认不参与键盘焦点、不画焦点虚线框（标题栏/工具栏/查找栏统一行为） -->
+    <button focusable="0" drawFocusRect="0"/>
+    <!-- 组合框保留键盘可用性，但不画焦点虚线框 -->
+    <combobox drawFocusRect="0"/>
+  </objattr>
+</UIDEF>

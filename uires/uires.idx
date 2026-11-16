@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resource>
+  <UIDEF>
+    <file name="XML_INIT" path="uidef\init.xml"  />
+  </UIDEF>
+  <LAYOUT>
+    <file name="XML_MAINWND" path="layout\main.xml"/>
+    <file name="XML_INSPECTOR" path="layout\inspector.xml"/>
+    <file name="XML_FIND" path="layout\find.xml"/>
+    <file name="XML_ABOUT" path="layout\about.xml"/>
+    <file name="XML_PROMPT" path="layout\prompt.xml"/>
+  </LAYOUT>
+
+  <ICON>
+    <file name="ICON_APP" path="image\app_icon.ico"/>
+  </ICON>
+
+  <SMENU>
+    <file name="MENU_FILE"   path="smenu\menu_file.xml"/>
+    <file name="MENU_EDIT"   path="smenu\menu_edit.xml"/>
+    <file name="MENU_VIEW"   path="smenu\menu_view.xml"/>
+    <file name="MENU_SEARCH" path="smenu\menu_search.xml"/>
+    <file name="MENU_WINDOW" path="smenu\menu_window.xml"/>
+    <file name="MENU_HELP"   path="smenu\menu_help.xml"/>
+    <file name="MENU_BPR"   path="smenu\menu_bpr.xml"/>
+    <file name="MENU_TABLIST" path="smenu\menu_tablist.xml"/>
+  </SMENU>
+
+  <lang>
+    <file name="zh" path="lang\lang_zh.xml"/>
+    <file name="en" path="lang\lang_en.xml"/>
+  </lang>
+
+  <values>
+    <file name="string" path="values\string.xml"/>
+    <file name="color" path="values\color.xml"/>
+    <file name="skin" path="values\skin.xml"/>
+  </values>
+
+  <svg>
+    <file name="app_icon" path="svg\app_icon.svg"/>
+    <file name="dropbtn_dark" path="svg\dropbtn_dark.svg"/>
+    <file name="menu_skin_dark" path="svg\menu_skin_dark.svg"/>
+    <file name="menu_sep_dark" path="svg\menu_sep_dark.svg"/>
+    <file name="menu_check_dark" path="svg\menu_check_dark.svg"/>
+    <file name="menu_arrow_dark" path="svg\menu_arrow_dark.svg"/>
+    <file name="scrollbar_dark" path="svg\scrollbar_dark.svg"/>
+  </svg>
+</resource>

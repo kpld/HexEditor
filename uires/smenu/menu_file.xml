@@ -1,0 +1,13 @@
+<menuRoot iconSkin="" itemHeight="26" iconMargin="4" textMargin="8" maxWidth="260">
+  <menuItem id="1001">新建(&amp;N)&#9;Ctrl+N</menuItem>
+  <menuItem id="1002">打开(&amp;O)...&#9;Ctrl+O</menuItem>
+  <sep/>
+  <menuItem id="1003">保存(&amp;S)&#9;Ctrl+S</menuItem>
+  <menuItem id="1004">另存为(&amp;A)...</menuItem>
+  <sep/>
+  <menuItem id="1006" check="1">只读模式(&amp;R)</menuItem>
+  <menuItem id="1008" check="1">快速保存大文件(&amp;F)</menuItem>
+  <menuItem id="1007">文件属性(&amp;P)...</menuItem>
+  <sep/>
+  <menuItem id="1005">退出(&amp;X)&#9;Alt+F4</menuItem>
+</menuRoot>

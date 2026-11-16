@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 「标签栏 ▾ 文件列表」用的菜单模板（SMenuEx 格式）。
+     条目是运行时 AppendMenu 加进去的，这里只提供根节点。
+     注意标签名：SMenuEx 认的是 menuRoot / menuItem，不是 SMenu / item。 -->
+<menuRoot itemHeight="26" textOffset="8" iconBarWidth="24" iconSkin=""
+          maxWidth="360" minWidth="160" margin="2,2,2,2">
+</menuRoot>

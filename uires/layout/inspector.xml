@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- margin=边框宽（SOUI SNcPainter 自绘边框）：无边框纯 WS_POPUP 窗口的
+     WM_NCHITTEST 由 SNcPainter 处理——borderWidth 非零时 8 向边缘缩放生效
+     （resizable="1"），dock/float 两种状态都可拉伸 -->
+<SOUI name="inspectorWnd" title="数据检查器" resizable="1" wndType="normal"
+      width="300" height="430" margin="4,4,4,4" minsize="180,200" sendWheel2Hover="1">
+  <!-- 不用 _skin.sys.wnd.bkgnd：那是浅色底皮肤，会盖住 colorBkgnd，
+       深色模式下在 vbox 间隙里露出一条白条。直接用 colorBkgnd，由
+       ApplyTheme 按主题改色。 -->
+  <root colorBkgnd="#fafbfc" layout="vbox" interval="2" inset="1,1,1,1">
+    <!-- SOUI 自绘标题栏（caption）：按住拖动移动窗口；× 关闭（查看菜单重开）。
+         窗口是纯 WS_POPUP 无系统边框，与主窗口同款交互。 -->
+    <caption name="caption" size="-2,28" layout="hbox" gravity="center" interval="6" padding="8,0,0,0"
+             colorBkgnd="#eef1f5">
+      <text name="txt_title" size="-1,-1" colorText="#1f2937" font="size:13">数据检查器</text>
+      <window size="-1,-1" weight="1"/>
+      <button name="btn_close" size="36,28" focusable="0" skin="skin_caption_close"
+              font="face:Segoe MDL2 Assets,size:10" colorText="#3a3f45" tip="关闭（可从 查看 菜单重新打开）">&#xE8BB;</button>
+    </caption>
+    <hr name="hr0" height="1" colorLine="#d0d7de"/>
+
+    <!-- 内容 -->
+    <!-- 值行用 SEdit readOnly：可选中复制冒号后的内容，但不可编辑。
+         必须保持 focusable（默认）：SRichEdit 的选择/复制依赖焦点状态，
+         focusable="0" 会让 SetFocus 被拒、选择失效（历史 bug）。点击值行时
+         焦点转到检查器窗口（hexview 光标停闪），点回 hex 区即恢复。 -->
+    <window name="content" size="-2,-2" weight="1" layout="vbox" interval="2" padding="6,2,6,2"
+            colorBkgnd="#fafbfc">
+      <edit name="val_byte" class="cls_mono" size="-2,20" readOnly="1" colorText="#252c33">UInt8: --</edit>
+      <edit name="val_word" class="cls_mono" size="-2,20" readOnly="1" colorText="#252c33">UInt16: --</edit>
+      <edit name="val_dword" class="cls_mono" size="-2,20" readOnly="1" colorText="#252c33">UInt32: --</edit>
+      <edit name="val_qword" class="cls_mono" size="-2,20" readOnly="1" colorText="#252c33">UInt64: --</edit>
+      <hr name="hr1" height="1" colorLine="#e3e7ec"/>
+      <edit name="val_int8" class="cls_mono" size="-2,20" readOnly="1" colorText="#252c33">Int8: --</edit>
+      <edit name="val_int16" class="cls_mono" size="-2,20" readOnly="1" colorText="#252c33">Int16: --</edit>
+      <edit name="val_int32" class="cls_mono" size="-2,20" readOnly="1" colorText="#252c33">Int32: --</edit>
+      <edit name="val_int64" class="cls_mono" size="-2,20" readOnly="1" colorText="#252c33">Int64: --</edit>
+      <hr name="hr2" height="1" colorLine="#e3e7ec"/>
+      <edit name="val_float" class="cls_mono" size="-2,20" readOnly="1" colorText="#252c33">Float32: --</edit>
+      <edit name="val_double" class="cls_mono" size="-2,20" readOnly="1" colorText="#252c33">Double64: --</edit>
+      <edit name="val_char" class="cls_mono" size="-2,20" readOnly="1" colorText="#252c33">字符: --</edit>
+      <hr name="hr3" height="1" colorLine="#e3e7ec"/>
+      <text name="lbl_file" width="150" font="bold:1" colorText="#2f5597">文件</text>
+      <!-- 不能加 multiLines：multiLines 文本在 vbox 里 wrap-content 宽度会被算成
+           1 个字，Linux/swinx 下实测只剩首字母 "s"（Windows 上碰巧正常）。
+           文件名一行足够，超长时由 SOUI 单行裁剪。 -->
+      <text name="txt_file" size="280,20" colorText="#666666" font="size:12">未打开文件</text>
+    </window>
+  </root>
+</SOUI>
+
+

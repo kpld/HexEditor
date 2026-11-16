@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 通用单行输入框：跨平台替代 Win32 原生 PromptText（CreateWindowExW 建的
+     STATIC/EDIT/BUTTON）。走 SOUI 自绘 + SHostDialog 模态，Windows / Linux / macOS 通用。
+     配色沿用 about.xml/find.xml 的浅色基线，运行时由 CPromptWnd::ApplyTheme 下发浅/深色；
+     文案由 CPromptWnd::OnInitDialog 按当前语言填充。
+     注意 vbox 里避免 multiLines 的 wrap-height 测量问题：text 用固定高度。 -->
+<SOUI name="promptWnd" title="" resizable="0" wndType="normal"
+      width="420" height="170" margin="4,4,4,4" minsize="420,170" sendWheel2Hover="1">
+  <root colorBkgnd="#ffffff" layout="vbox" interval="2" inset="1,1,1,1">
+    <caption name="caption" size="-2,28" layout="hbox" gravity="center" interval="6" padding="8,0,0,0"
+             colorBkgnd="#eef1f5">
+      <text name="txt_title" size="-1,-1" colorText="#1f2937" font="size:13"></text>
+      <window size="-1,-1" weight="1"/>
+      <button name="btn_close" size="36,28" focusable="0" skin="skin_caption_close"
+              font="face:Segoe MDL2 Assets,size:10" colorText="#3a3f45" tip="关闭">&#xE8BB;</button>
+    </caption>
+    <hr name="hr0" height="1" colorLine="#d0d7de"/>
+
+    <window name="content" size="-2,-2" weight="1" layout="vbox" interval="10" padding="16,14,16,12">
+      <text name="txt_label" size="-2,20" colorText="#404040" font="size:12"></text>
+      <edit name="edit_value" size="-2,26" cueText=""/>
+      <window size="-2,30" layout="hbox" interval="8" gravity="center">
+        <window weight="1"/>
+        <button name="btn_ok" id="1" width="88" height="28" skin="skin_find_btn"></button>
+        <button name="btn_cancel" id="2" width="88" height="28" skin="skin_find_btn"></button>
+      </window>
+    </window>
+  </root>
+</SOUI>

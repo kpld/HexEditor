@@ -1,0 +1,10 @@
+<menuRoot iconSkin="" itemHeight="26" iconMargin="4" textMargin="8" maxWidth="260">
+  <menuItem id="4001">查找(&amp;F)...&#9;Ctrl+F</menuItem>
+  <menuItem id="4002">查找下一个(&amp;N)&#9;F3</menuItem>
+  <menuItem id="4003">查找上一个(&amp;P)&#9;Shift+F3</menuItem>
+  <sep/>
+  <menuItem id="4004">转到偏移(&amp;G)...&#9;Ctrl+G</menuItem>
+  <sep/>
+  <menuItem id="4005">替换(&amp;R)...&#9;Ctrl+H</menuItem>
+  <menuItem id="4006">校验和(&amp;C)...</menuItem>
+</menuRoot>

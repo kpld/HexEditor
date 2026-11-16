@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 英文翻译表：source 必须与运行时字符串完全一致（& = &amp;，Tab = &#9;，换行 = &#10;） -->
+<language name="en">
+  <context>
+    <!-- ==================== 菜单栏 ==================== -->
+    <message><source>文件(&amp;F)</source><translation>&amp;File</translation></message>
+    <message><source>编辑(&amp;E)</source><translation>&amp;Edit</translation></message>
+    <message><source>查看(&amp;V)</source><translation>&amp;View</translation></message>
+    <message><source>搜索(&amp;S)</source><translation>&amp;Search</translation></message>
+    <message><source>窗口(&amp;W)</source><translation>&amp;Window</translation></message>
+    <message><source>帮助(&amp;H)</source><translation>&amp;Help</translation></message>
+
+    <!-- ==================== 文件菜单 ==================== -->
+    <message><source>新建(&amp;N)&#9;Ctrl+N</source><translation>&amp;New&#9;Ctrl+N</translation></message>
+    <message><source>打开(&amp;O)...&#9;Ctrl+O</source><translation>&amp;Open...&#9;Ctrl+O</translation></message>
+    <message><source>保存(&amp;S)&#9;Ctrl+S</source><translation>&amp;Save&#9;Ctrl+S</translation></message>
+    <message><source>另存为(&amp;A)...</source><translation>Save &amp;As...</translation></message>
+    <message><source>只读模式(&amp;R)</source><translation>&amp;Read-only mode</translation></message>
+    <message><source>快速保存大文件(&amp;F)</source><translation>&amp;Fast save large files</translation></message>
+    <message><source>文件属性(&amp;P)...</source><translation>&amp;Properties...</translation></message>
+    <message><source>退出(&amp;X)&#9;Alt+F4</source><translation>E&amp;xit&#9;Alt+F4</translation></message>
+
+    <!-- ==================== 编辑菜单 ==================== -->
+    <message><source>撤销(&amp;U)&#9;Ctrl+Z</source><translation>&amp;Undo&#9;Ctrl+Z</translation></message>
+    <message><source>重做(&amp;R)&#9;Ctrl+Y</source><translation>&amp;Redo&#9;Ctrl+Y</translation></message>
+    <message><source>剪切(&amp;T)&#9;Ctrl+X</source><translation>Cu&amp;t&#9;Ctrl+X</translation></message>
+    <message><source>复制(&amp;C)&#9;Ctrl+C</source><translation>&amp;Copy&#9;Ctrl+C</translation></message>
+    <message><source>粘贴(&amp;P)&#9;Ctrl+V</source><translation>&amp;Paste&#9;Ctrl+V</translation></message>
+    <message><source>删除(&amp;L)&#9;Del</source><translation>De&amp;lete&#9;Del</translation></message>
+    <message><source>插入字节(&amp;I)&#9;Ins</source><translation>&amp;Insert bytes&#9;Ins</translation></message>
+    <message><source>全选(&amp;A)&#9;Ctrl+A</source><translation>Select &amp;All&#9;Ctrl+A</translation></message>
+    <message><source>插入模式(&amp;M)</source><translation>Insert &amp;mode</translation></message>
+    <message><source>填充选区(&amp;F)...</source><translation>&amp;Fill selection...</translation></message>
+
+    <!-- ==================== 查看菜单 ==================== -->
+    <message><source>每行 16 字节</source><translation>16 bytes per row</translation></message>
+    <message><source>每行 24 字节</source><translation>24 bytes per row</translation></message>
+    <message><source>每行 32 字节</source><translation>32 bytes per row</translation></message>
+    <message><source>每行 48 字节</source><translation>48 bytes per row</translation></message>
+    <message><source>显示数据检查器(&amp;I)</source><translation>Show data &amp;inspector</translation></message>
+    <message><source>显示状态栏(&amp;S)</source><translation>Show &amp;status bar</translation></message>
+    <message><source>显示工具栏(&amp;T)</source><translation>Show &amp;toolbar</translation></message>
+    <message><source>字符集(&amp;C)...</source><translation>&amp;Charset...</translation></message>
+    <message><source>浅色主题(&amp;L)</source><translation>&amp;Light theme</translation></message>
+    <message><source>深色主题(&amp;D)</source><translation>&amp;Dark theme</translation></message>
+    <message><source>中文(&amp;C)</source><translation>Chinese(&amp;C)</translation></message>
+
+    <!-- ==================== 搜索菜单 ==================== -->
+    <message><source>查找(&amp;F)...&#9;Ctrl+F</source><translation>&amp;Find...&#9;Ctrl+F</translation></message>
+    <message><source>查找下一个(&amp;N)&#9;F3</source><translation>Find &amp;next&#9;F3</translation></message>
+    <message><source>查找上一个(&amp;P)&#9;Shift+F3</source><translation>Find &amp;previous&#9;Shift+F3</translation></message>
+    <message><source>转到偏移(&amp;G)...&#9;Ctrl+G</source><translation>&amp;Go to offset...&#9;Ctrl+G</translation></message>
+    <message><source>替换(&amp;R)...&#9;Ctrl+H</source><translation>&amp;Replace...&#9;Ctrl+H</translation></message>
+    <message><source>校验和(&amp;C)...</source><translation>&amp;Checksum...</translation></message>
+
+    <!-- ==================== 窗口 / 帮助菜单 ==================== -->
+    <message><source>最小化(&amp;N)</source><translation>Mi&amp;nimize</translation></message>
+    <message><source>最大化/还原(&amp;X)</source><translation>Ma&amp;ximize/Restore</translation></message>
+    <message><source>关闭(&amp;C)&#9;Ctrl+W</source><translation>&amp;Close&#9;Ctrl+W</translation></message>
+    <message><source>快捷键一览(&amp;K)...</source><translation>&amp;Keyboard shortcuts...</translation></message>
+    <message><source>关于 HexEditor(&amp;A)...</source><translation>&amp;About HexEditor...</translation></message>
+
+    <!-- ==================== 工具栏 ==================== -->
+    <message><source>每行</source><translation>Row</translation></message>
+    <message><source>字符集</source><translation>Charset</translation></message>
+    <message><source>新建 (Ctrl+N)</source><translation>New (Ctrl+N)</translation></message>
+    <message><source>打开 (Ctrl+O)</source><translation>Open (Ctrl+O)</translation></message>
+    <message><source>保存 (Ctrl+S)</source><translation>Save (Ctrl+S)</translation></message>
+    <message><source>撤销 (Ctrl+Z)</source><translation>Undo (Ctrl+Z)</translation></message>
+    <message><source>重做 (Ctrl+Y)</source><translation>Redo (Ctrl+Y)</translation></message>
+    <message><source>剪切 (Ctrl+X)</source><translation>Cut (Ctrl+X)</translation></message>
+    <message><source>复制 (Ctrl+C)</source><translation>Copy (Ctrl+C)</translation></message>
+    <message><source>粘贴 (Ctrl+V)</source><translation>Paste (Ctrl+V)</translation></message>
+    <message><source>删除 (Del)</source><translation>Delete (Del)</translation></message>
+    <message><source>查找 (Ctrl+F)</source><translation>Find (Ctrl+F)</translation></message>
+    <message><source>转到偏移 (Ctrl+G)</source><translation>Go to offset (Ctrl+G)</translation></message>
+    <message><source>插入/覆盖模式 (Ins)</source><translation>Insert/Overwrite (Ins)</translation></message>
+    <message><source>每行显示的字节数（可输入 1-4096）</source><translation>Bytes per row (1-4096)</translation></message>
+    <message><source>字符集（暂未实现解码）</source><translation>Charset (decoding not implemented)</translation></message>
+    <message><source>查看左侧的标签</source><translation>Scroll tabs left</translation></message>
+    <message><source>查看右侧的标签</source><translation>Scroll tabs right</translation></message>
+    <message><source>打开的文件列表</source><translation>Open file list</translation></message>
+
+    <!-- ==================== 标题栏 / 状态栏 ==================== -->
+    <message><source>最小化</source><translation>Minimize</translation></message>
+    <message><source>最大化</source><translation>Maximize</translation></message>
+    <message><source>向下还原</source><translation>Restore Down</translation></message>
+    <message><source>大小: 0</source><translation>Size: 0</translation></message>
+    <message><source>偏移: 0</source><translation>Offset: 0</translation></message>
+    <message><source>选择: 0</source><translation>Selection: 0</translation></message>
+    <message><source>模式: 覆盖</source><translation>Mode: Overwrite</translation></message>
+
+    <!-- ==================== 查找浮窗 ==================== -->
+    <message><source>查找 / 替换</source><translation>Find / Replace</translation></message>
+    <message><source>查找:</source><translation>Find:</translation></message>
+    <message><source>替换:</source><translation>Replace:</translation></message>
+    <message><source>转到:</source><translation>Go to:</translation></message>
+    <message><source>转到</source><translation>Go</translation></message>
+    <message><source>上一个</source><translation>Previous</translation></message>
+    <message><source>下一个</source><translation>Next</translation></message>
+    <message><source>替换</source><translation>Replace</translation></message>
+    <message><source>全部替换</source><translation>Replace All</translation></message>
+    <message><source>关闭</source><translation>Close</translation></message>
+    <message><source>切换 文本 / 十六进制 查找</source><translation>Toggle text / hex search</translation></message>
+    <message><source>文本</source><translation>Text</translation></message>
+    <message><source>文本；HEX 模式按字节对输入，如 4D 5A</source><translation>Text; in HEX mode enter byte pairs, e.g. 4D 5A</translation></message>
+    <message><source>替换为（留空表示删除匹配内容）</source><translation>Replace with (leave empty to delete matches)</translation></message>
+    <message><source>偏移，支持 0x 十六进制</source><translation>Offset, supports 0x hex</translation></message>
+
+    <!-- ==================== 数据检查器 ==================== -->
+    <message><source>数据检查器</source><translation>Data Inspector</translation></message>
+    <message><source>字符: --</source><translation>Char: --</translation></message>
+    <message><source>文件</source><translation>File</translation></message>
+    <message><source>未打开文件</source><translation>No file open</translation></message>
+    <message><source>关闭（可从 查看 菜单重新打开）</source><translation>Close (reopen from View menu)</translation></message>
+
+    <!-- ==================== 通用对话框 ==================== -->
+    <message><source>确定</source><translation>OK</translation></message>
+    <message><source>取消</source><translation>Cancel</translation></message>
+    <message><source>所有文件</source><translation>All files</translation></message>
+    <message><source>关闭 %s 前是否保存修改？</source><translation>Save changes to %s before closing?</translation></message>
+    <message><source>保存失败！</source><translation>Save failed!</translation></message>
+    <message><source>关闭 %s</source><translation>Close %s</translation></message>
+    <message><source>打开文件失败！文件可能不存在或被占用。</source><translation>Failed to open the file. It may not exist or is in use.</translation></message>
+    <message><source>当前没有打开的文件。</source><translation>No file is open.</translation></message>
+    <message><source>已保存（快速，仅写修改页）: %s</source><translation>Saved (fast, modified pages only): %s</translation></message>
+    <message><source>新建文件%d.bin</source><translation>NewFile%d.bin</translation></message>
+    <message><source>新建文件失败。</source><translation>Failed to create a new file.</translation></message>
+    <message><source>已新建空文件，直接输入即可写入（插入模式）。</source><translation>New empty file created. Start typing to write (insert mode).</translation></message>
+    <message><source>模式: 插入</source><translation>Mode: Insert</translation></message>
+    <message><source>每行字节数无效：请输入 1-4096 的整数。</source><translation>Invalid bytes per row. Enter an integer from 1 to 4096.</translation></message>
+
+    <!-- ==================== 关于 / 快捷键 ==================== -->
+    <message><source>HexEditor 1.0&#10;&#10;基于 SOUI4 的十六进制编辑器&#10;</source><translation>HexEditor 1.0&#10;&#10;A hex editor built on SOUI4&#10;</translation></message>
+    <message><source>· 只读 mmap + 页覆盖层，超大文件秒开&#10;</source><translation>· Read-only mmap + page overlay: huge files open instantly&#10;</translation></message>
+    <message><source>· Piece 表描述逻辑流，插入/删除无需搬移数据&#10;</source><translation>· Piece table describes the logical stream; insert/delete without moving data&#10;</translation></message>
+    <message><source>· 多级撤销/重做、后台查找、数据检查器</source><translation>· Multi-level undo/redo, background search, data inspector</translation></message>
+    <message><source>关于 HexEditor</source><translation>About HexEditor</translation></message>
+    <message><source>基于 SOUI4 的十六进制编辑器</source><translation>A hex editor built on SOUI4</translation></message>
+    <message><source>快捷键一览</source><translation>Keyboard shortcuts</translation></message>
+    <message><source>Ctrl+O 打开        Ctrl+S 保存        Ctrl+F 查找&#10;</source><translation>Ctrl+O Open        Ctrl+S Save        Ctrl+F Find&#10;</translation></message>
+    <message><source>Ctrl+G 转到        Ctrl+Z 撤销        Ctrl+Y 重做&#10;</source><translation>Ctrl+G Go to       Ctrl+Z Undo        Ctrl+Y Redo&#10;</translation></message>
+    <message><source>Ctrl+A 全选        Ctrl+C/V/X 复制/粘贴/剪切&#10;</source><translation>Ctrl+A Select all  Ctrl+C/V/X Copy/Paste/Cut&#10;</translation></message>
+    <message><source>F3 查找下一个      Shift+F3 查找上一个&#10;</source><translation>F3 Find next       Shift+F3 Find previous&#10;</translation></message>
+    <message><source>Tab 切换输入列     Ins 切换插入/覆盖&#10;</source><translation>Tab Switch input column   Ins Toggle insert/overwrite&#10;</translation></message>
+    <message><source>Home/End 行首行尾（Ctrl 为文件首尾）  PgUp/PgDn 翻页</source><translation>Home/End Line start/end (Ctrl: file start/end)  PgUp/PgDn Page up/down</translation></message>
+    <message><source>「%s」功能尚未实现，后续版本会补上。</source><translation>"%s" is not implemented yet; it will be added in a future version.</translation></message>
+
+    <!-- ==================== 文件属性 ==================== -->
+    <message><source>路径:&#9;%s&#10;&#10;大小:&#9;%llu 字节&#10;原始大小:&#9;%llu 字节&#10;</source><translation>Path:&#9;%s&#10;&#10;Size:&#9;%llu bytes&#10;Original size:&#9;%llu bytes&#10;</translation></message>
+    <message><source>修改状态:&#9;%s&#10;只读:&#9;%s&#10;每行字节数:&#9;%d&#10;字符集:&#9;%s</source><translation>Modified:&#9;%s&#10;Read-only:&#9;%s&#10;Bytes per row:&#9;%d&#10;Charset:&#9;%s</translation></message>
+    <message><source>已修改</source><translation>Modified</translation></message>
+    <message><source>未修改</source><translation>Unmodified</translation></message>
+    <message><source>是</source><translation>Yes</translation></message>
+    <message><source>否</source><translation>No</translation></message>
+    <message><source>文件属性</source><translation>File Properties</translation></message>
+
+    <!-- ==================== 校验和 ==================== -->
+    <message><source>整个文件</source><translation>Entire file</translation></message>
+    <message><source>选区 [0x%llX, 0x%llX)</source><translation>Selection [0x%llX, 0x%llX)</translation></message>
+    <message><source>文件为空，无法计算校验和。</source><translation>The file is empty; cannot compute a checksum.</translation></message>
+    <message><source>计算失败：系统不支持所需的哈希算法。</source><translation>Computation failed: the required hash algorithm is not supported.</translation></message>
+    <message><source>校验和</source><translation>Checksum</translation></message>
+    <message><source>%s&#10;偏移: 0x%llX&#10;长度: %llu 字节&#10;&#10;CRC32:&#9;%08X&#10;MD5:&#9;%s&#10;SHA-1:&#9;%s&#10;SHA-256:&#9;%s</source><translation>%s&#10;Offset: 0x%llX&#10;Length: %llu bytes&#10;&#10;CRC32:&#9;%08X&#10;MD5:&#9;%s&#10;SHA-1:&#9;%s&#10;SHA-256:&#9;%s</translation></message>
+
+    <!-- ==================== 只读 / 快速保存 ==================== -->
+    <message><source>已切换为只读模式：所有编辑操作将被拒绝。</source><translation>Switched to read-only mode: all edits will be rejected.</translation></message>
+    <message><source>已关闭只读模式。</source><translation>Read-only mode off.</translation></message>
+    <message><source>已开启快速保存：大文件纯覆盖编辑只写修改的页（快，但非原子）。</source><translation>Fast save on: large-file overwrites write only modified pages (fast, non-atomic).</translation></message>
+    <message><source>已关闭快速保存：保存时始终整文件重写（原子，慢）。</source><translation>Fast save off: saving always rewrites the whole file (atomic, slower).</translation></message>
+
+    <!-- ==================== 插入 / 填充 ==================== -->
+    <message><source>文件为只读，无法插入字节。</source><translation>The file is read-only; cannot insert bytes.</translation></message>
+    <message><source>插入字节</source><translation>Insert Bytes</translation></message>
+    <message><source>要插入的字节数（默认 1）：</source><translation>Number of bytes to insert (default 1):</translation></message>
+    <message><source>字节数无效。</source><translation>Invalid byte count.</translation></message>
+    <message><source>一次最多插入 1 MB。</source><translation>You can insert at most 1 MB at a time.</translation></message>
+    <message><source>插入失败。</source><translation>Insert failed.</translation></message>
+    <message><source>已在偏移 0x%llX 插入 %d 个 0x00 字节。</source><translation>Inserted %d 0x00 bytes at offset 0x%llX.</translation></message>
+    <message><source>文件为只读，无法填充。</source><translation>The file is read-only; cannot fill.</translation></message>
+    <message><source>请先选择要填充的区间。</source><translation>Select a range to fill first.</translation></message>
+    <message><source>填充选区</source><translation>Fill Selection</translation></message>
+    <message><source>填充字节（十六进制，如 FF；默认 00）：</source><translation>Fill byte (hex, e.g. FF; default 00):</translation></message>
+    <message><source>请输入 1 个字节的十六进制值，如 00、FF、7F。</source><translation>Enter one hex byte, e.g. 00, FF, 7F.</translation></message>
+    <message><source>已用 0x%02X 填充 %llu 字节。</source><translation>Filled %llu bytes with 0x%02X.</translation></message>
+
+    <!-- ==================== 字符集 / 主题 ==================== -->
+    <message><source>字符集已切换为 %s。</source><translation>Charset switched to %s.</translation></message>
+    <message><source>已切换到</source><translation>Switched to</translation></message>
+    <message><source>主题。</source><translation>theme.</translation></message>
+    <message><source>浅色</source><translation>Light</translation></message>
+    <message><source>深色</source><translation>Dark</translation></message>
+
+    <!-- ==================== 查找 / 替换 ==================== -->
+    <message><source>请先打开文件。</source><translation>Open a file first.</translation></message>
+    <message><source>文件为只读，无法替换。</source><translation>The file is read-only; cannot replace.</translation></message>
+    <message><source>查找内容无效。</source><translation>Invalid search text.</translation></message>
+    <message><source>替换内容无效。</source><translation>Invalid replacement text.</translation></message>
+    <message><source>未找到匹配内容。</source><translation>No matches found.</translation></message>
+    <message><source>已替换 1 处。</source><translation>Replaced 1 occurrence.</translation></message>
+    <message><source>全部替换完成，共替换 %d 处。</source><translation>Replace all complete: %d occurrences replaced.</translation></message>
+    <message><source>查找内容无效。十六进制模式请按字节对输入，如 4D 5A。</source><translation>Invalid search text. In hex mode, enter byte pairs, e.g. 4D 5A.</translation></message>
+    <message><source>无法启动搜索。</source><translation>Unable to start search.</translation></message>
+    <message><source>十六进制模式：按字节对输入，如 4D 5A</source><translation>Hex mode: enter byte pairs, e.g. 4D 5A</translation></message>
+    <message><source>文本模式</source><translation>Text mode</translation></message>
+    <message><source>已切换为十六进制查找（按字节输入）</source><translation>Switched to hex search (byte input)</translation></message>
+    <message><source>已切换为文本查找</source><translation>Switched to text search</translation></message>
+    <message><source>偏移格式无效。</source><translation>Invalid offset format.</translation></message>
+
+    <!-- ==================== 状态栏 / 标题 ==================== -->
+    <message><source>大小: %llu 字节</source><translation>Size: %llu bytes</translation></message>
+    <message><source>偏移: 0x%llX</source><translation>Offset: 0x%llX</translation></message>
+    <message><source>选择: %llu 字节</source><translation>Selection: %llu bytes</translation></message>
+    <message><source>字符: %c</source><translation>Char: %c</translation></message>
+    <message><source>字符: .</source><translation>Char: .</translation></message>
+    <message><source> [只读]</source><translation> [Read-only]</translation></message>
+    <message><source>HexEditor - 基于 SOUI4 的十六进制编辑器</source><translation>HexEditor - Hex editor based on SOUI4</translation></message>
+    <message><source>未命名 - HexEditor</source><translation>Untitled - HexEditor</translation></message>
+    <message><source>未打开文件  使用 Ctrl+O 打开，或把文件拖到窗口</source><translation>No file open. Press Ctrl+O or drop a file here.</translation></message>
+    <message><source>切换语言失败。</source><translation>Failed to switch language.</translation></message>
+  </context>
+</language>

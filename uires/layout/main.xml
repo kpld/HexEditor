@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SOUI name="mainWindow" title="@string/title" smallIcon="ICON_APP:16" bigIcon="ICON_APP:32"
+      width="1100" height="740" resizable="1" wndType="appMain" translucent="0"
+      margin="6,6,6,6" minsize="640,480" sendWheel2Hover="1">
+  <root skin="_skin.sys.wnd.bkgnd" layout="vbox" interval="0" inset="1,1,1,1">
+
+    <!-- ==================== 标题栏 ==================== -->
+    <caption name="caption" size="-2,32" layout="hbox" gravity="center" interval="6" padding="8,0,0,0" colorBkgnd="#eef1f5">
+      <img skin="skin_app_icon" iconIndex="0" size="16,16"/>
+      <text name="txt_title" size="-1,-1" colorText="#1f2937" font="size:13">HexEditor</text>
+      <window size="-1,-1" weight="1"/>
+      <button name="btn_min" size="44,32" focusable="0" skin="skin_caption_btn" font="face:Segoe MDL2 Assets,size:10" colorText="#3a3f45" tip="最小化">&#xE921;</button>
+      <window size="44,32">
+        <button name="btn_max" pos="0,0" size="44,32" focusable="0" skin="skin_caption_btn" font="face:Segoe MDL2 Assets,size:10" colorText="#3a3f45" tip="最大化">&#xE922;</button>
+        <button name="btn_restore" pos="0,0" size="44,32" focusable="0" skin="skin_caption_btn" font="face:Segoe MDL2 Assets,size:10" colorText="#3a3f45" tip="向下还原" show="0">&#xE923;</button>
+      </window>
+      <button name="btn_close" size="44,32" focusable="0" skin="skin_caption_close" font="face:Segoe MDL2 Assets,size:10" colorText="#3a3f45" tip="关闭">&#xE8BB;</button>
+    </caption>
+
+    <!-- ==================== 菜单栏 ==================== -->
+    <menubar name="menubar" size="-2,26" useMenuEx="1" colorBkgnd="#f7f8fa">
+      <btnstyle skin="_skin.sys.list.item" padding="2"/>
+      <menus>
+        <menuItem src="SMENU:MENU_FILE">文件(&amp;F)</menuItem>
+        <menuItem src="SMENU:MENU_EDIT">编辑(&amp;E)</menuItem>
+        <menuItem src="SMENU:MENU_VIEW">查看(&amp;V)</menuItem>
+        <menuItem src="SMENU:MENU_SEARCH">搜索(&amp;S)</menuItem>
+        <menuItem src="SMENU:MENU_WINDOW">窗口(&amp;W)</menuItem>
+        <menuItem src="SMENU:MENU_HELP">帮助(&amp;H)</menuItem>
+      </menus>
+    </menubar>
+
+    <!-- ==================== 工具栏 ==================== -->
+    <window name="toolbar" size="-2,38" layout="hbox" interval="2" padding="6,3,6,3" gravity="center"
+            colorBkgnd="#f7f8fa">
+      <button name="tb_new" size="30,30" skin="skin_tb_btn" font="face:Segoe MDL2 Assets,size:15" tip="新建 (Ctrl+N)">&#xE8A5;</button>
+      <button name="tb_open" size="30,30" skin="skin_tb_btn" font="face:Segoe MDL2 Assets,size:15" tip="打开 (Ctrl+O)">&#xE8E5;</button>
+      <button name="tb_save" size="30,30" skin="skin_tb_btn" font="face:Segoe MDL2 Assets,size:15" tip="保存 (Ctrl+S)">&#xE74E;</button>
+      <window name="sep1" size="1,22" colorBkgnd="#d7dbe1" extend_top="4" extend_bottom="4"/>
+      <button name="tb_undo" size="30,30" skin="skin_tb_btn" font="face:Segoe MDL2 Assets,size:15" tip="撤销 (Ctrl+Z)">&#xE7A7;</button>
+      <button name="tb_redo" size="30,30" skin="skin_tb_btn" font="face:Segoe MDL2 Assets,size:15" tip="重做 (Ctrl+Y)">&#xE7A6;</button>
+      <window name="sep2" size="1,22" colorBkgnd="#d7dbe1" extend_top="4" extend_bottom="4"/>
+      <button name="tb_cut" size="30,30" skin="skin_tb_btn" font="face:Segoe MDL2 Assets,size:15" tip="剪切 (Ctrl+X)">&#xE8C6;</button>
+      <button name="tb_copy" size="30,30" skin="skin_tb_btn" font="face:Segoe MDL2 Assets,size:15" tip="复制 (Ctrl+C)">&#xE8C8;</button>
+      <button name="tb_paste" size="30,30" skin="skin_tb_btn" font="face:Segoe MDL2 Assets,size:15" tip="粘贴 (Ctrl+V)">&#xE77F;</button>
+      <button name="tb_delete" size="30,30" skin="skin_tb_btn" font="face:Segoe MDL2 Assets,size:15" tip="删除 (Del)">&#xE74D;</button>
+      <window name="sep3" size="1,22" colorBkgnd="#d7dbe1" extend_top="4" extend_bottom="4"/>
+      <button name="tb_find" size="30,30" skin="skin_tb_btn" font="face:Segoe MDL2 Assets,size:15" tip="查找 (Ctrl+F)">&#xE721;</button>
+      <button name="tb_goto" size="30,30" skin="skin_tb_btn" font="face:Segoe MDL2 Assets,size:15" tip="转到偏移 (Ctrl+G)">&#xE72A;</button>
+      <button name="tb_mode" size="30,30" skin="skin_tb_btn" font="face:Segoe MDL2 Assets,size:15" tip="插入/覆盖模式 (Ins)">&#xE70F;</button>
+      <!-- 每行字节数：可编辑下拉组合框（可输入任意整数，也可下拉选预置值）。
+           输入值统一钳到 1..4096：超过 4096（含超过 int 范围的大数）在输入过程中
+           立即按 4096 生效并回写组合框，不留非法假值。上限与 CHexView::MAX_BPR、
+           m_rowCache[4096] 一致（双层钳制，超限值不会造成行缓存越界）。
+           所有 bpr 都显示自绘浮层横向滚动条（4 列制 nMax 保证大 bpr 稳定）。 -->
+      <text name="lbl_bpr" size="-1,-1" colorText="#4b5563" font="size:12">每行</text>
+      <combobox name="cbx_bpr" size="62,24" margin="1" colorBorder="#2f6fbf" dropDown="0" dropHeight="320" tip="每行显示的字节数（可输入 1-4096）">
+        <dropdownStyle>
+          <root colorBkgnd="#ffffff"/>
+        </dropdownStyle>
+        <liststyle class="cls_edit" itemHeight="24"/>
+        <editstyle inset="4,0,4,0" align="left"/>
+        <items>
+          <item text="8"/>
+          <item text="16"/>
+          <item text="24"/>
+          <item text="32"/>
+          <item text="48"/>
+          <item text="64"/>
+          <item text="128"/>
+          <item text="256"/>
+          <item text="512"/>
+          <item text="1024"/>
+          <item text="2048"/>
+          <item text="4096"/>
+        </items>
+      </combobox>
+      <text name="lbl_charset" size="-1,-1" colorText="#4b5563" font="size:12">字符集</text>
+      <combobox name="cbx_charset" size="96,24" margin="1" colorBorder="#2f6fbf" dropDown="1" dropHeight="150" curSel="0" tip="字符集（暂未实现解码）">
+        <dropdownStyle>
+          <root colorBkgnd="#ffffff"/>
+        </dropdownStyle>
+        <liststyle class="cls_edit" itemHeight="24"/>
+        <editstyle inset="6,0,6,0" align="left"/>
+        <items>
+          <item text="ANSI"/>
+          <item text="UTF-8"/>
+          <item text="UTF-16 LE"/>
+        </items>
+      </combobox>
+    </window>
+
+    <!-- ==================== 文件标签页 ==================== -->
+    <!-- SOUI 布局引擎跳过 IsVisible(FALSE) 的子项（SFrame/SouiLayout），运行时切
+         display 不触发同步重排——按钮"按需出现"在该引擎下无法稳定实现。
+         务实方案：按钮恒显示、恒占位（hbox 流式）。tabctrl 让出 66px：
+         ‹ › 滚动 22px×2 + ▾ 文件列表 22px。 -->
+    <window size="-2,26" layout="hbox" interval="0" show="0" display="0" name="tabbar_wrap" colorBkgnd="#f0f2f5">
+      <tabctrl_ex name="tab_files" size="-1,-2" weight="1" curSel="-1" focusable="0"
+               tabWidth="-1" tabHeight="22"
+               tabSkin="_skin.sys.tab.header" colorText="#404040" colorTextHover="#1f2937"
+               textPadding="10,0">
+      </tabctrl_ex>
+      <button name="tab_scroll_left" size="22,26" show="1" skin="skin_tb_btn"
+              font="face:Segoe MDL2 Assets,size:10" colorText="#3a3f45"
+              colorBkgnd="#f0f2f5" tip="查看左侧的标签">&#xE76B;</button>
+      <button name="tab_scroll_right" size="22,26" show="1" skin="skin_tb_btn"
+              font="face:Segoe MDL2 Assets,size:10" colorText="#3a3f45"
+              colorBkgnd="#f0f2f5" tip="查看右侧的标签">&#xE76C;</button>
+      <button name="tab_list_files" size="22,26" show="1" skin="skin_tb_btn"
+              font="face:Segoe MDL2 Assets,size:9" colorText="#3a3f45"
+              colorBkgnd="#f0f2f5" tip="打开的文件列表">&#xE70D;</button>
+    </window>
+
+    <!-- 查找 / 替换 / 转到 已改为独立非模态浮窗（CFindWnd，XML_FIND），
+         主窗口上方不再保留任何内嵌输入条。 -->
+
+    <!-- ==================== 主区域：十六进制视图 ==================== -->
+    <!-- 数据检查器已改为独立悬浮子窗口（CInspectorWnd，XML_INSPECTOR）：
+         带标题栏可拖动移动、可关闭（查看菜单重开）。主区域只留 hexview。 -->
+    <window name="mainarea" weight="1" size="-2,0" layout="hbox" interval="0">
+      <!-- sbWid=0：SPanel 不再为滚动条预留布局空间，滚动条由 CHexView 自绘为浮层
+           （静止 6px 细条 / 悬停 14px 显箭头，不重排内容） -->
+      <hexview name="hexview" weight="1" size="-2,-2" focusable="1" sbWid="0" sbArrowSize="0"/>
+    </window>
+
+    <!-- ==================== 状态栏 ==================== -->
+    <window name="statusbar" size="-2,24" layout="hbox" interval="6" padding="6,0,6,0" gravity="center"
+            colorBkgnd="#f0f2f5">
+      <text name="txt_size" weight="1" height="20" colorText="#404040">大小: 0</text>
+      <text name="txt_offset" weight="1" height="20" colorText="#404040">偏移: 0</text>
+      <text name="txt_sel" weight="2" height="20" colorText="#404040">选择: 0</text>
+      <text name="txt_mode" weight="1" height="20" colorText="#404040">模式: 覆盖</text>
+    </window>
+  </root>
+</SOUI>

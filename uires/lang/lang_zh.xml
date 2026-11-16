@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 中文：源字符串本身就是中文，翻译器只需保证资源存在（identity） -->
+<language name="zh">
+  <context>
+    <message>
+      <source>HexEditor</source>
+      <translation>HexEditor</translation>
+    </message>
+  </context>
+</language>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 关于窗口：独立 SHostWnd（与查找/检查器同款自绘 caption）。
+     配色由 CAboutWnd::ApplyTheme 按浅色/深色主题下发，不在 XML 写死；
+     正文文案由 CAboutWnd::RefreshText 按当前语言填充（复用已有翻译条目）。
+     布局沿用 find.xml 的成熟写法：content 用 size="-2,-2" weight="1"，
+     每行固定高度、宽度 -2，最后一行是按钮行（weight 撑开 + 按钮靠右）。 -->
+<SOUI name="aboutWnd" title="关于 HexEditor" resizable="0" wndType="normal"
+      width="440" height="264" margin="4,4,4,4" minsize="440,264" sendWheel2Hover="1">
+  <root colorBkgnd="#ffffff" layout="vbox" interval="2" inset="1,1,1,1">
+    <caption name="caption" size="-2,28" layout="hbox" gravity="center" interval="6" padding="8,0,0,0"
+             colorBkgnd="#eef1f5">
+      <text name="txt_title" size="-1,-1" colorText="#1f2937" font="size:13">关于 HexEditor</text>
+      <window size="-1,-1" weight="1"/>
+      <button name="btn_close" size="36,28" focusable="0" skin="skin_caption_close"
+              font="face:Segoe MDL2 Assets,size:10" colorText="#3a3f45" tip="关闭">&#xE8BB;</button>
+    </caption>
+    <hr name="hr0" height="1" colorLine="#d0d7de"/>
+
+    <window name="content" size="-2,-2" weight="1" layout="vbox" interval="8" padding="18,14,18,12">
+      <window size="-2,52" layout="hbox" interval="12" gravity="center">
+        <img skin="skin_app_icon" iconIndex="0" size="48,48"/>
+        <window size="-2,-1" layout="vbox" interval="2">
+          <text name="txt_name" size="-2,-2" colorText="#1f2937" font="bold:1,size:16">HexEditor 1.0</text>
+          <text name="txt_sub" size="-2,-2" colorText="#6b7280" font="size:12">基于 SOUI4 的十六进制编辑器</text>
+        </window>
+      </window>
+      <hr name="hr1" height="1" colorLine="#e3e7ec"/>
+      <text name="txt_body" size="-2,96" multiLines="1" colorText="#404040" font="size:12"></text>
+      <window size="-2,30" layout="hbox" gravity="center">
+        <window weight="1"/>
+        <button name="btn_ok" width="88" height="28" skin="skin_find_btn">确定</button>
+      </window>
+    </window>
+  </root>
+</SOUI>
