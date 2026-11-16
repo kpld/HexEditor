@@ -1,0 +1,258 @@
+diff --git a/SOUI/src/core/SNcPainter.cpp b/SOUI/src/core/SNcPainter.cpp
+index dca4d8f..71bc8cc 100755
+--- a/SOUI/src/core/SNcPainter.cpp
++++ b/SOUI/src/core/SNcPainter.cpp
+@@ -154,7 +154,9 @@ LRESULT SNcPainter::OnNcCalcSize(BOOL bCalcValidRects, LPARAM lParam)
+         }
+         else
+         {
+-            pNative->GetWindowRect((LPRECT)lParam);
++            CRect rc;
++            pNative->GetWindowRect(rc);
++            ::CopyRect((LPRECT)lParam, &rc);
+         }
+     }
+     else
+diff --git a/SOUI/src/core/SPanel.cpp b/SOUI/src/core/SPanel.cpp
+index 473fb82..b39ae0f 100755
+--- a/SOUI/src/core/SPanel.cpp
++++ b/SOUI/src/core/SPanel.cpp
+@@ -152,6 +152,9 @@ SPanel::SPanel()
+     , m_hitSb(SSB_NULL)
+     , m_wBarVisible(0)
+     , m_wBarEnable(SSB_BOTH)
++    // ScrollUpdate() 用 dwTime - m_dwUpdateTime 做刷新节流；未初始化时首次
++    // 几乎必然成立，会在滚动路径上多触发一次同步 Update()。显式清零。
++    , m_dwUpdateTime(0)
+     , m_dwUpdateInterval(DEF_UPDATEINTERVAL)
+     , m_nScrollSpeed(10)
+     , m_zDelta(0)
+diff --git a/SOUI/src/core/shostwnd.cpp b/SOUI/src/core/shostwnd.cpp
+index 354cde7..52896a2 100755
+--- a/SOUI/src/core/shostwnd.cpp
++++ b/SOUI/src/core/shostwnd.cpp
+@@ -815,6 +815,7 @@ int SHostWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
+     }
+     m_dwThreadID = GetCurrentThreadId();
+     SHostMgr::getSingletonPtr()->AddHostMsgHandler(m_hWnd);
++
+     UpdateAutoSizeCount(true);
+     m_memRT = NULL;
+     CRect rcWnd = GetClientRect();
+@@ -1284,21 +1285,27 @@ void SHostWnd::OnGetMinMaxInfo(LPMINMAXINFO lpMMI)
+ {
+     HMONITOR hMonitor = ::MonitorFromWindow(m_hWnd, MONITOR_DEFAULTTONULL);
+ 
+-    if (hMonitor && GetRoot())
++    if (hMonitor)
+     {
+         MONITORINFO mi = { sizeof(MONITORINFO) };
+         ::GetMonitorInfo(hMonitor, &mi);
+ 
+         CRect rcWork = mi.rcWork, rcMonitor = mi.rcMonitor;
+-        CRect rcMaxInset = m_hostAttr.GetMaxInset(GetScale());
++        // 无标题/边框窗口（ncPainter 为空）没有真正的非客户区可留白，inset 恒为 0。
++        // 注意：此处不可调用 GetScale()——WM_GETMINMAXINFO 在 Create 阶段（GetRoot() 仍为空）
++        // 就会到达，那时取缩放会访问尚未初始化完成的对象，导致窗口过程内异常（0xC000041D）。
++        CRect rcMaxInset(0, 0, 0, 0);
+         lpMMI->ptMaxPosition.x = abs(rcWork.left - rcMonitor.left) - rcMaxInset.left;
+         lpMMI->ptMaxPosition.y = abs(rcWork.top - rcMonitor.top) - rcMaxInset.top;
+         lpMMI->ptMaxSize.x = abs(rcWork.Width()) + rcMaxInset.right + rcMaxInset.left;
+         lpMMI->ptMaxSize.y = abs(rcWork.Height()) + rcMaxInset.bottom + rcMaxInset.top;
+         lpMMI->ptMaxTrackSize.x = abs(rcWork.Width()) + rcMaxInset.right + rcMaxInset.left;
+         lpMMI->ptMaxTrackSize.y = abs(rcWork.Height()) + rcMaxInset.bottom + rcMaxInset.top;
+-        CSize szMin = m_hostAttr.GetMinSize(GetScale());
+-        lpMMI->ptMinTrackSize = CPoint(szMin.cx, szMin.cy);
++        if (GetRoot())
++        {
++            CSize szMin = m_hostAttr.GetMinSize(GetScale());
++            lpMMI->ptMinTrackSize = CPoint(szMin.cx, szMin.cy);
++        }
+     }
+     else
+     {
+diff --git a/SOUI/src/helper/SMenuEx.cpp b/SOUI/src/helper/SMenuEx.cpp
+index 150013c..0908cc6 100755
+--- a/SOUI/src/helper/SMenuEx.cpp
++++ b/SOUI/src/helper/SMenuEx.cpp
+@@ -267,7 +267,27 @@ void SMenuExItem::BeforePaint(IRenderTarget *pRT, SPainter &painter) const
+ 
+ void SMenuExItem::OnPaint(IRenderTarget *pRT)
+ {
+-    __baseCls::OnPaint(pRT);
++    // 菜单项文本约定为 "标题\t快捷键"。'\t' 在 GDI 下会推进到制表位，但在
++    // Skia/cairo 等渲染器里 U+0009 没有字形，会被画成 .notdef 方块，两段也
++    // 挤在一起。这里把快捷键拆出来单独右对齐绘制（两平台表现一致）。
++    SStringT strFull = m_strText.GetText();
++    int nTab = strFull.ReverseFind(L'\t');
++    if (nTab != -1)
++    {
++        SStringT strKey = strFull.Mid(nTab + 1);
++        m_strText.SetText(strFull.Left(nTab), false);
++        __baseCls::OnPaint(pRT);
++        m_strText.SetText(strFull, false);
++
++        CRect rcKey;
++        GetTextRect(&rcKey);
++        DrawText(pRT, strKey, strKey.GetLength(), &rcKey,
++                 DT_SINGLELINE | DT_VCENTER | DT_RIGHT | DT_END_ELLIPSIS);
++    }
++    else
++    {
++        __baseCls::OnPaint(pRT);
++    }
+ 
+     CRect rc = GetClientRect();
+     SMenuExRoot *pMenuRoot = sobj_cast<SMenuExRoot>(GetRoot());
+diff --git a/components/render-gdi/linux/render-gdi.cpp b/components/render-gdi/linux/render-gdi.cpp
+index ab10829..e12b0fe 100644
+--- a/components/render-gdi/linux/render-gdi.cpp
++++ b/components/render-gdi/linux/render-gdi.cpp
+@@ -1963,8 +1963,13 @@ static void renderNSVGtext(HDC hdc, const NSVGtext *text, BYTE byAlpha, LPCRECT
+     {
+         strcpy(szFace, "Arial");
+     }
+-    strcpy(lf.lfFaceName, szFace);
+-    // MultiByteToWideChar(CP_UTF8, 0, szFace, -1, lf.lfFaceName, LF_FACESIZE);
++#ifdef _UNICODE
++    // szFace 是 UTF-8 窄字符，lfFaceName 在 UNICODE 下是 wchar_t[]，必须做编码转换。
++    // 65001 = CP_UTF8（用数值避免依赖 CP_UTF8 宏是否可见）。
++    MultiByteToWideChar(65001, 0, szFace, -1, lf.lfFaceName, LF_FACESIZE);
++#else
++    strncpy(lf.lfFaceName, szFace, LF_FACESIZE - 1);
++#endif
+     if (text->fontWeight >= 7)
+         lf.lfWeight = FW_BOLD;
+     if (text->fontStyle == 1 || text->fontStyle == 2)
+diff --git a/components/render-skia/drawtext-skia.cpp b/components/render-skia/drawtext-skia.cpp
+index 416403f..a02ac41 100644
+--- a/components/render-skia/drawtext-skia.cpp
++++ b/components/render-skia/drawtext-skia.cpp
+@@ -166,7 +166,10 @@ SkScalar SkTextLayoutEx::drawLine( SkCanvas *canvas, SkScalar x, SkScalar y, int
+         {
+             SkScalar x1 = m_paint->measureText(text,(m_prefix[i]-iBegin)*sizeof(wchar_t));
+             SkScalar x2 = m_paint->measureText(text,(m_prefix[i]-iBegin+1)*sizeof(wchar_t));
+-            canvas->drawLine(xBase+x1,y+1,xBase+x2,y+1,*m_paint); //绘制下划线
++            SkPaint up(*m_paint);
++            up.setAntiAlias(false);
++            SkScalar uy = (SkScalar)(int)(y + 4) + 0.5f;
++            canvas->drawLine(xBase+x1,uy,xBase+x2,uy,up); //绘制下划线(下移+去锯齿，避免与字母重叠且清晰)
+             i++;
+         }
+     }
+@@ -231,7 +234,10 @@ SkRect SkTextLayoutEx::draw( SkCanvas* canvas )
+ 
+     canvas->save();
+ 
+-    canvas->clipRect(m_rcBound);
++    // 底部多留 4px 给助记符下划线（drawLine 里画在 y+4），否则会被裁掉看不见
++    SkRect clipRc = m_rcBound;
++    clipRc.fBottom += 4;
++    canvas->clipRect(clipRc);
+ 
+     float height = m_rcBound.height();
+     float y=m_rcBound.fTop - (bUseAllHeight?metrics.fTop:metrics.fAscent);
+diff --git a/components/render-skia/render-skia.cpp b/components/render-skia/render-skia.cpp
+index a7a19a8..5ad3ecc 100644
+--- a/components/render-skia/render-skia.cpp
++++ b/components/render-skia/render-skia.cpp
+@@ -1292,7 +1292,17 @@ HRESULT SRenderTarget_Skia::TextOut(int x, int y, LPCTSTR lpszString, int nCount
+ {
+     if (nCount < 0)
+         nCount = (int)_tcslen(lpszString);
++#ifdef _UNICODE
++    // Unicode 构建下无需编码转换：直接把调用方缓冲交给 Skia。
++    // 十六进制编辑器是逐字符绘制，每帧数千次调用，这里省掉每次两个
++    // 临时字符串对象的构造/分配。绘制内容与原有转换路径逐字节一致。
++    LPCWSTR pszText = (LPCWSTR)lpszString;
++    int cchText = nCount;
++#else
+     SStringW strW = S_CT2W(SStringT(lpszString, nCount));
++    LPCWSTR pszText = (LPCWSTR)strW;
++    int cchText = strW.GetLength();
++#endif
+     SkPaint txtPaint = m_paint;
+     txtPaint.setStyle(SkPaint::kStrokeAndFill_Style);
+     txtPaint.setTypeface(m_curFont->GetFont());
+@@ -1308,11 +1318,14 @@ HRESULT SRenderTarget_Skia::TextOut(int x, int y, LPCTSTR lpszString, int nCount
+     SkScalar fx = m_ptOrg.fX + x;
+     SkScalar fy = m_ptOrg.fY + y;
+ 
+-    SkMatrix oldMtx = m_SkCanvas->getTotalMatrix();
+-    if (m_curFont->LogFont()->lfEscapement != 0)
++    // 只有旋转文本才需要读取并恢复 canvas 矩阵；普通水平文本省掉这两步
++    const int nEscape = m_curFont->LogFont()->lfEscapement;
++    SkMatrix oldMtx;
++    if (nEscape != 0)
+     {
++        oldMtx = m_SkCanvas->getTotalMatrix();
+         SkMatrix mtx;
+-        float degree = (float)m_curFont->LogFont()->lfEscapement;
++        float degree = (float)nEscape;
+         degree /= 10;
+         degree = 360.f - degree; // change to clockwise.
+         mtx.setRotate(degree);
+@@ -1322,9 +1335,8 @@ HRESULT SRenderTarget_Skia::TextOut(int x, int y, LPCTSTR lpszString, int nCount
+         m_SkCanvas->setMatrix(mtx);
+     }
+     fy += -(bUseAllHeight?metrics.fTop:metrics.fAscent);
+-    //fy += -metrics.fTop;
+-    m_SkCanvas->drawText((LPCWSTR)strW, strW.GetLength() * sizeof(WCHAR), fx, fy, txtPaint);
+-    if (m_curFont->LogFont()->lfEscapement != 0)
++    m_SkCanvas->drawText(pszText, cchText * sizeof(WCHAR), fx, fy, txtPaint);
++    if (nEscape != 0)
+     {
+         m_SkCanvas->setMatrix(oldMtx);
+     }
+diff --git a/utilities/audio/SPlaySound_unix.cpp b/utilities/audio/SPlaySound_unix.cpp
+index 26e6ac9..2dd04ac 100644
+--- a/utilities/audio/SPlaySound_unix.cpp
++++ b/utilities/audio/SPlaySound_unix.cpp
+@@ -5,7 +5,47 @@
+ #include <mmsystem.h>
+ #include <SPlaySound.h>
+ 
++#include <string>
++
++// SPlaySound 对外是 LPCTSTR(UNICODE 下 = const wchar_t*)，而 swinx 的
++// PlaySound 只收 LPCSTR(UTF-8/ANSI)。这里把宽字符路径按 UTF-8 转成窄字符再转发，
++// 与 Windows 分支 wav 文件路径的行为保持一致。
+ BOOL WINAPI SPlaySound(LPCTSTR pszSound, HMODULE hmod, DWORD fdwSound)
+ {
++    if (!pszSound)
++        return PlaySound((LPCSTR)NULL, hmod, fdwSound);
++
++#ifdef _UNICODE
++    // 手写 UTF-32(wchar_t, WCHAR_SIZE=4) -> UTF-8，不依赖进程 locale。
++    std::string narrow;
++    for (const wchar_t *p = pszSound; *p; ++p)
++    {
++        unsigned int cp = (unsigned int)*p;
++        if (cp < 0x80)
++        {
++            narrow.push_back((char)cp);
++        }
++        else if (cp < 0x800)
++        {
++            narrow.push_back((char)(0xC0 | (cp >> 6)));
++            narrow.push_back((char)(0x80 | (cp & 0x3F)));
++        }
++        else if (cp < 0x10000)
++        {
++            narrow.push_back((char)(0xE0 | (cp >> 12)));
++            narrow.push_back((char)(0x80 | ((cp >> 6) & 0x3F)));
++            narrow.push_back((char)(0x80 | (cp & 0x3F)));
++        }
++        else
++        {
++            narrow.push_back((char)(0xF0 | (cp >> 18)));
++            narrow.push_back((char)(0x80 | ((cp >> 12) & 0x3F)));
++            narrow.push_back((char)(0x80 | ((cp >> 6) & 0x3F)));
++            narrow.push_back((char)(0x80 | (cp & 0x3F)));
++        }
++    }
++    return PlaySound(narrow.c_str(), hmod, fdwSound);
++#else
+     return PlaySound(pszSound, hmod, fdwSound);
++#endif
+ }

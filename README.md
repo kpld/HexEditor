@@ -72,6 +72,7 @@ HexEditor/
 ├── CMakeLists.txt          Build entry point (add_subdirectory(soui4) + this project's targets)
 ├── README.md
 ├── README_CN.md
+├── patches/                Patches for the pinned SOUI + swinx commits (required to build, see §4)
 ├── soui4/                  SOUI4 sources (github.com/soui4/soui, or gitee.com/setoutsoft/soui4 in China)
 ├── src/
 │   ├── HexFileModel.h/.cpp mmap + page overlay + sparse edit pieces + undo stack + save
@@ -127,6 +128,21 @@ Run: `build\bin\HexEditor.exe [file path]`
 
 > Note: `CMakeLists.txt` only checks that the SOUI4 sources exist under `soui4/` (or a directory passed via `-DSOUI4_ROOT=...`);
 > if they are missing, its error message prints both clone commands (GitHub and Gitee) — either source works, they are the same code base.
+
+**Pinned SOUI version + required patches (important):** this project is verified against SOUI commit `8a96e0745cdb7a01cecb8e26e00321b5f3a48c46` (2026-10-18),
+with its `swinx` submodule at `992753b954222d3153aee12ec3b18ee0580c37b6`, **plus the two patch files in this repo's `patches/` folder**.
+A pristine checkout of that SOUI commit does not build on Linux: the patches fix two wide/narrow-character compile errors inside SOUI itself
+(`utilities/audio/SPlaySound_unix.cpp`, `components/render-gdi/linux/render-gdi.cpp`) and several Linux rendering bugs
+(menu "title\tshortcut" text drawn as boxes, `SetMenuItemInfo` dropping `MIIM_FTYPE`/`MIIM_STATE`, Skia text-out performance, and more — every hunk is commented).
+Newer SOUI revisions are also unverified: as of 2026-11-16, SOUI HEAD (`9b32cec`) still has the same two compile errors.
+After cloning SOUI, check out the pinned commits and apply both patches (run from the HexEditor root, where `soui4/` and `patches/` sit side by side):
+
+```bash
+git -C soui4 checkout 8a96e0745cdb7a01cecb8e26e00321b5f3a48c46
+git -C soui4 submodule update --init swinx
+git -C soui4 apply ../patches/soui4-8a96e07-local.patch
+git -C soui4/swinx apply ../../patches/swinx-992753b-local.patch
+```
 
 ### Switching to the Skia Renderer
 

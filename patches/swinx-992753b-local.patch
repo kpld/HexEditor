@@ -1,0 +1,81 @@
+diff --git a/src/cmnctl32/menu.cpp b/src/cmnctl32/menu.cpp
+index f4860e9..30b7017 100644
+--- a/src/cmnctl32/menu.cpp
++++ b/src/cmnctl32/menu.cpp
+@@ -599,7 +599,23 @@ void CMenu::DrawItemLoop(HDC memdc, RECT clentRc)
+                 }
+             }
+             RECT rcText = { rc.left + 26, rc.top, rc.right - 10, rc.bottom };
+-            DrawTextA(memdc, txt, -1, &rcText, DT_SINGLELINE | DT_VCENTER);
++            // 菜单文本约定 "标题\t快捷键"。原生 Win32 的 DrawText 会把 '\t'
++            // 当制表位，但 cairo/fontconfig 下 U+0009 没有字形，会被画成
++            // .notdef 方块，且两段挤在一起。这里按 '\t' 拆成左右两列手动绘制。
++            const char *pTab = strchr(txt, '\t');
++            if (pTab)
++            {
++                std::string strLeft(txt, (size_t)(pTab - txt));
++                const char *pszRight = pTab + 1;
++                DrawTextA(memdc, strLeft.c_str(), -1, &rcText,
++                          DT_SINGLELINE | DT_VCENTER | DT_LEFT | DT_END_ELLIPSIS);
++                DrawTextA(memdc, pszRight, -1, &rcText,
++                          DT_SINGLELINE | DT_VCENTER | DT_RIGHT | DT_END_ELLIPSIS);
++            }
++            else
++            {
++                DrawTextA(memdc, txt, -1, &rcText, DT_SINGLELINE | DT_VCENTER);
++            }
+ 
+             if (oldBrush)
+             {
+@@ -706,6 +722,22 @@ BOOL CMenu::SetMenuItemInfo(UINT item, BOOL fByPosition, LPCMENUITEMINFOA lpmi)
+         {
+             pItem->m_data = (LPCSTR)lpmi->dwItemData;
+         }
++        // 原实现漏了 MIIM_FTYPE / MIIM_STATE：SOUI 的菜单项是 owner-draw 的，
++        // 一旦走 SetMenuItemInfo 设置 fType=MF_OWNERDRAW 而这里丢掉，
++        // IsOwnerDraw() 就为 false，菜单会退回默认绘制——'\t' 分隔的快捷键
++        // 于是被当成普通字符画成 .notdef 方块，且左右两列不再对齐。
++        if (lpmi->fMask & (MIIM_FTYPE | MIIM_TYPE))
++        {
++            pItem->ModifyMenuFlag(lpmi->fType);
++        }
++        if (lpmi->fMask & MIIM_STATE)
++        {
++            pItem->ModifyMenuFlag(lpmi->fState);
++        }
++        if (lpmi->fMask & MIIM_ID)
++        {
++            pItem->m_id = lpmi->wID;
++        }
+         return TRUE;
+     }
+     return FALSE;
+diff --git a/src/gdi/cairo/drawtext.cpp b/src/gdi/cairo/drawtext.cpp
+index f62aeb4..443a0e2 100644
+--- a/src/gdi/cairo/drawtext.cpp
++++ b/src/gdi/cairo/drawtext.cpp
+@@ -19,6 +19,24 @@ void cairo_draw_text(cairo_t *ctx, const char *text, int len, RECT *box, UINT uF
+ //////////////////////////////////////////////////////////////////////////
+ void TextLayoutEx::init(cairo_t *ctx, const char *text, size_t length, const RECT &rc, UINT uFormat)
+ {
++    // 展开 '\t'：Win32 GDI 的 DrawText 会把制表符推进到下一个制表位，但
++    // cairo/fontconfig 下 U+0009 没有字形，会画成 .notdef 方块（SOUI 菜单
++    // 的 "标题\t快捷键" 就中招）。这里统一换成等宽空格，测量与绘制走同一
++    // 条路径，宽度保持一致。
++    std::vector<char> expandedTab;
++    if (text && memchr(text, '\t', length))
++    {
++        expandedTab.reserve(length + 16);
++        for (size_t i = 0; i < length; i++)
++        {
++            if (text[i] == '\t')
++                expandedTab.insert(expandedTab.end(), 4, ' ');
++            else
++                expandedTab.push_back(text[i]);
++        }
++        text = expandedTab.data();
++        length = expandedTab.size();
++    }
+     if (uFormat & DT_NOPREFIX)
+     {
+         m_text.resize(length);

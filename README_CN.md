@@ -69,6 +69,7 @@ Home/End 行首/行尾（Ctrl 为文件首/尾）   PageUp/PageDown 翻页
 HexEditor/
 ├── CMakeLists.txt          构建入口（add_subdirectory(soui4) + 本工程目标）
 ├── README.md
+├── patches/                锁定版本 SOUI/swinx 的本地补丁（构建必需，见第 4 节）
 ├── soui4/                  SOUI4 源码（gitee.com/setoutsoft/soui4）
 ├── src/
 │   ├── HexFileModel.h/.cpp mmap + 页覆盖层 + 稀疏编辑段 + 撤销栈 + 保存
@@ -99,6 +100,21 @@ cmake -S . -B build -G "Visual Studio 17 2022" -A x64
 
 # 3) 编译
 cmake --build build --config Release
+```
+
+**SOUI 版本锁定 + 必需补丁（重要）**：本工程的构建验证基于 SOUI 提交 `8a96e0745cdb7a01cecb8e26e00321b5f3a48c46`（2026-10-18），
+其 `swinx` 子模块为 `992753b954222d3153aee12ec3b18ee0580c37b6`，**外加本仓库 `patches/` 目录里的两个补丁文件**。
+该 SOUI 提交的原版代码在 Linux 上编不过：补丁修复了 SOUI 自身的两处宽窄字符编译错误
+（`utilities/audio/SPlaySound_unix.cpp`、`components/render-gdi/linux/render-gdi.cpp`），以及若干 Linux 渲染问题
+（菜单“标题\t快捷键”被画成方块、`SetMenuItemInfo` 丢弃 `MIIM_FTYPE`/`MIIM_STATE`、Skia 文本绘制性能等，每处修改均有注释）。
+更高版本的 SOUI 同样未经验证：截至 2026-11-16，SOUI 最新版（`9b32cec`）仍有同样的两处编译错误。
+克隆 SOUI 后，请先切到锁定版本并打上两个补丁（在 HexEditor 根目录执行，该目录下 `soui4/` 与 `patches/` 并列）：
+
+```bash
+git -C soui4 checkout 8a96e0745cdb7a01cecb8e26e00321b5f3a48c46
+git -C soui4 submodule update --init swinx
+git -C soui4 apply ../patches/soui4-8a96e07-local.patch
+git -C soui4/swinx apply ../../patches/swinx-992753b-local.patch
 ```
 
 也可以直接用 NMake 单配置生成器（等价，适合命令行/CI）：
