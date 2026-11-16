@@ -6,7 +6,10 @@ name: macOS build
 # by the author; this workflow is the macOS verification route.
 #
 # The configure flags mirror SOUI's own CI (soui4/soui build.yml, macOS
-# arm64 leg): macos-14 runner, clang, Ninja, PNG hardware optimizations off.
+# arm64 leg): clang, Ninja, PNG hardware optimizations off. The runner is
+# macos-latest (arm64): the fixed macos-14 label is no longer offered to
+# this account ("configuration 'macos-14-arm64-us-default' is not
+# supported", run cancelled instantly on 2026-11-16).
 
 on:
   workflow_dispatch:
@@ -16,7 +19,7 @@ on:
 jobs:
   build-macos:
     name: Build on macOS (arm64)
-    runs-on: macos-14
+    runs-on: macos-latest
     steps:
       - name: Checkout HexEditor
         uses: actions/checkout@v4
