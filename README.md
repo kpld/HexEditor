@@ -126,7 +126,7 @@ Artifacts land in `build/bin/`: `HexEditor.exe`, `soui4.dll`, `utilities4.dll`, 
 Run: `build\bin\HexEditor.exe [file path]`
 
 > Note: `CMakeLists.txt` only checks that the SOUI4 sources exist under `soui4/` (or a directory passed via `-DSOUI4_ROOT=...`);
-> if they are missing, its error message prints the Gitee clone command. Outside China, clone from the GitHub address above instead — the effect is identical.
+> if they are missing, its error message prints both clone commands (GitHub and Gitee) — either source works, they are the same code base.
 
 ### Switching to the Skia Renderer
 
