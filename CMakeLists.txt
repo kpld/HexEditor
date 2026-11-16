@@ -21,8 +21,11 @@ if(NOT DEFINED SOUI4_ROOT)
     set(SOUI4_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/soui4)
 endif()
 if(NOT EXISTS ${SOUI4_ROOT}/CMakeLists.txt)
-    message(FATAL_ERROR "未找到 SOUI4 源码：${SOUI4_ROOT}\n"
-            "请先执行: git clone --depth 1 https://gitee.com/setoutsoft/soui4.git ${SOUI4_ROOT}")
+    message(FATAL_ERROR "未找到 SOUI4 源码 / SOUI4 sources not found: ${SOUI4_ROOT}\n"
+            "请先克隆 SOUI4（二选一，内容相同）/ Clone SOUI4 first (either source, same code):\n"
+            "  Outside China: git clone --depth 1 https://github.com/soui4/soui.git ${SOUI4_ROOT}\n"
+            "  Inside China:  git clone --depth 1 https://gitee.com/setoutsoft/soui4.git ${SOUI4_ROOT}\n"
+            "或用 -DSOUI4_ROOT=<path> 指向已有的 SOUI4 源码目录 / Or pass -DSOUI4_ROOT=<path> to an existing SOUI4 tree.")
 endif()
 
 # ---------------------------------------------------------------------------
@@ -163,6 +166,7 @@ endif()
 # ---------------------------------------------------------------------------
 # 模型单元测试（不依赖 UI）：cmake --build . --target hexeditor-test 后运行
 # ---------------------------------------------------------------------------
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tools/test_model.cpp)
 add_executable(hexeditor-test tools/test_model.cpp src/HexFileModel.cpp)
 target_include_directories(hexeditor-test PRIVATE ${HEX_SRC_DIR})
 if(NOT WIN32)
@@ -177,3 +181,6 @@ set_target_properties(hexeditor-test PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY_DEBUG ${_HEX_OUT_DIR}
     CXX_STANDARD 11
     CXX_STANDARD_REQUIRED ON)
+else()
+    message(STATUS "tools/test_model.cpp not found, skipping the hexeditor-test target")
+endif()
