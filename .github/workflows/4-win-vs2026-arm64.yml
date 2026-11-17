@@ -3,15 +3,6 @@ name: win-VS2026-build (arm64)
 # 只手动触发：Actions 页面左侧点这个 → Run workflow，只跑本平台。
 on:
   workflow_dispatch:
-  # TEMP(verify): push 触发仅用于本次 8 平台验证，验证完成后移除，恢复纯手动。
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/4-win-vs2026-arm64.yml'
-      - 'src/**'
-      - 'uires/**'
-      - 'CMakeLists.txt'
-      - 'patches/**'
 
 jobs:
   build:
