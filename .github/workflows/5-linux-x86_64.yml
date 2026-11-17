@@ -15,7 +15,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04       # 锁定 24.04：ubuntu-latest 自 2026-10-19 起逐步漂移到 Ubuntu 26.04（工具链未验证）
     timeout-minutes: 90
     steps:
       - name: Checkout
@@ -73,7 +73,7 @@ jobs:
         run: |
           set +e
           if [ -f build.log ]; then
-            { grep -inE 'error|fatal|failed|undefined reference|not found|no such' build.log | head -40; echo '--- build.log tail ---'; tail -15 build.log; } | sed -e 's/%/%25/g' -e 's/\r//g' | while IFS= read -r line; do echo "::error::$line"; done
+            { grep -inE 'FAILED|error C[0-9]+|error LNK[0-9]+|: error:|fatal error|undefined reference|ninja: build stopped' build.log | head -25; echo '--- build.log tail ---'; tail -15 build.log; } | sed -e 's/%/%25/g' -e 's/\r//g' | while IFS= read -r line; do echo "::error::$line"; done
           fi
           if [ -f soui-fetch.log ]; then
             { grep -inE 'error|fatal|failed|not found|no such' soui-fetch.log | head -8; echo '--- fetch tail ---'; tail -5 soui-fetch.log; } | sed -e 's/%/%25/g' -e 's/\r//g' | while IFS= read -r line; do echo "::error::$line"; done
