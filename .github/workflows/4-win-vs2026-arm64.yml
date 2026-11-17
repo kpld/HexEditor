@@ -26,6 +26,7 @@ jobs:
         shell: bash
         run: |
           set -e
+          exec > >(tee -a soui-fetch.log) 2>&1
           rm -rf soui4
           git init soui4
           git -C soui4 config core.autocrlf false
@@ -34,6 +35,7 @@ jobs:
           git -C soui4 checkout FETCH_HEAD
           git -C soui4 config url."https://github.com/soui4/swinx".insteadOf "https://gitee.com/setoutsoft/swinx"
           git -C soui4 -c core.autocrlf=false submodule update --init swinx
+          sed -i 's/\r$//' ../patches/soui4-8a96e07-local.patch ../patches/swinx-992753b-local.patch
           git -C soui4 apply ../patches/soui4-8a96e07-local.patch
           git -C soui4/swinx apply ../../patches/swinx-992753b-local.patch
 
@@ -50,9 +52,10 @@ jobs:
       - name: Build
         shell: bash
         run: |
+          set -o pipefail
           # 只构建主程序，不碰默认 ALL target —— tools/test_model.cpp 有已知编译错误。
-          cmake --build build --target HexEditor -j3
-          cmake --build build --target resprovider-zip msftedit translator log4z -j3 || true
+          cmake --build build --target HexEditor -j3 2>&1 | tee -a build.log
+          cmake --build build --target resprovider-zip msftedit translator log4z -j3 2>&1 | tee -a build.log || true
 
       - name: Inspect
         shell: bash
@@ -68,3 +71,14 @@ jobs:
           path: build/bin/
           if-no-files-found: error
           retention-days: 7
+
+      - name: Surface logs on failure
+        if: failure()
+        shell: bash
+        run: |
+          for f in soui-fetch.log build.log; do
+            if [ -f "$f" ]; then
+              { grep -inE 'error|fatal|failed|not found|no such' "$f" | head -25; echo '--- tail ---'; tail -10 "$f"; } | sed -e 's/%/%25/g' -e 's/\r//g' | while IFS= read -r line; do echo "::error::$line"; done
+            fi
+          done
+          true

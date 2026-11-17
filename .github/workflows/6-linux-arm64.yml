@@ -24,6 +24,7 @@ jobs:
       - name: Fetch pinned SOUI + apply patches
         run: |
           set -e
+          exec > >(tee -a soui-fetch.log) 2>&1
           rm -rf soui4
           git init soui4
           git -C soui4 remote add origin https://github.com/soui4/soui.git
@@ -48,9 +49,10 @@ jobs:
 
       - name: Build
         run: |
+          set -o pipefail
           # 只构建主程序，不碰默认 ALL target —— tools/test_model.cpp 有已知编译错误。
-          cmake --build build --target HexEditor -j3
-          cmake --build build --target resprovider-zip msftedit translator log4z -j3 || true
+          cmake --build build --target HexEditor -j3 2>&1 | tee -a build.log
+          cmake --build build --target resprovider-zip msftedit translator log4z -j3 2>&1 | tee -a build.log || true
 
       - name: Inspect
         run: |
@@ -66,3 +68,13 @@ jobs:
           path: build/bin/
           if-no-files-found: error
           retention-days: 7
+
+      - name: Surface logs on failure
+        if: failure()
+        run: |
+          for f in soui-fetch.log build.log; do
+            if [ -f "$f" ]; then
+              { grep -inE 'error|fatal|failed|not found|no such' "$f" | head -25; echo '--- tail ---'; tail -10 "$f"; } | sed -e 's/%/%25/g' -e 's/\r//g' | while IFS= read -r line; do echo "::error::$line"; done
+            fi
+          done
+          true
