@@ -36,7 +36,7 @@ jobs:
           git -C soui4 checkout FETCH_HEAD
           git -C soui4 config url."https://github.com/soui4/swinx".insteadOf "https://gitee.com/setoutsoft/swinx"
           git -C soui4 -c core.autocrlf=false submodule update --init swinx
-          sed -i 's/\r$//' ../patches/soui4-8a96e07-local.patch ../patches/swinx-992753b-local.patch
+          sed -i 's/\r$//' patches/soui4-8a96e07-local.patch patches/swinx-992753b-local.patch
           git -C soui4 apply ../patches/soui4-8a96e07-local.patch
           git -C soui4/swinx apply ../../patches/swinx-992753b-local.patch
 
