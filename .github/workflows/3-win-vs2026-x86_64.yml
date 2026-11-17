@@ -1,0 +1,46 @@
+name: win-VS2026-build (x86_64)
+
+# 只手动触发：Actions 页面左侧点这个 → Run workflow，只跑本平台。
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    # 专用镜像：预装 VS2026（VS 18 / v145 工具集）。
+    runs-on: windows-2025-vs2026
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup MSVC (VS2026)
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+          vsversion: '2026'       # 锁定 VS2026；该镜像同时装了 VS2022，必须显式指定
+
+      - name: Configure
+        shell: bash
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        shell: bash
+        run: |
+          # 只构建主程序，不碰默认 ALL target —— tools/test_model.cpp 有已知编译错误。
+          cmake --build build --target HexEditor -j3
+          cmake --build build --target resprovider-zip msftedit translator log4z -j3 || true
+
+      - name: Inspect
+        shell: bash
+        run: |
+          echo "--- win VS2026 x86_64 ---"
+          cl.exe /Bv 2>&1 | head -8 || true
+          ls -lh build/bin/ | head -25
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: HexEditor-win-vs2026-x86_64
+          path: build/bin/
+          if-no-files-found: error
+          retention-days: 7

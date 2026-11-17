@@ -1,0 +1,45 @@
+name: linux-build (arm64)
+
+# 只手动触发：Actions 页面左侧点这个 → Run workflow，只跑本平台。
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04-arm       # 原生 ARM64 runner
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build cmake pkg-config libssl-dev \
+            libxcb1-dev libxcb-render0-dev libgl1-mesa-dev libglu1-mesa-dev \
+            freeglut3-dev uuid-dev libasound2-dev libfontconfig1-dev \
+            libfreetype-dev libxkbcommon-dev libdbus-1-dev
+
+      - name: Configure
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: |
+          # 只构建主程序，不碰默认 ALL target —— tools/test_model.cpp 有已知编译错误。
+          cmake --build build --target HexEditor -j3
+          cmake --build build --target resprovider-zip msftedit translator log4z -j3 || true
+
+      - name: Inspect
+        run: |
+          echo "--- linux arm64 ---"
+          uname -m
+          ls -lh build/bin/ | head -25
+          file build/bin/HexEditor 2>/dev/null || true
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: HexEditor-linux-arm64
+          path: build/bin/
+          if-no-files-found: error
+          retention-days: 7

@@ -1,0 +1,46 @@
+name: macOS Build (arm64)
+
+# 只手动触发：Actions 页面左侧点这个 → Run workflow，只跑本平台。
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest            # Apple Silicon M1
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install deps
+        run: brew install cmake ninja openssl@3 pkg-config
+
+      - name: Configure
+        run: |
+          # arm64 Mac 上 brew 在 /opt/homebrew，brew --prefix 自动给对路径。
+          PREFIX="$(brew --prefix openssl@3)"
+          export PKG_CONFIG_PATH="$PREFIX/lib/pkgconfig:$PKG_CONFIG_PATH"
+          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \
+            -DOPENSSL_ROOT_DIR="$PREFIX"
+
+      - name: Build
+        run: |
+          # 只构建主程序，不碰默认 ALL target —— tools/test_model.cpp 有已知编译错误。
+          cmake --build build --target HexEditor -j3
+          cmake --build build --target resprovider-zip msftedit translator log4z -j3 || true
+
+      - name: Inspect
+        run: |
+          echo "--- macOS arm64 ---"
+          uname -m
+          file build/bin/HexEditor
+          otool -L build/bin/HexEditor | head -25
+          ls -lh build/bin/ | head -25
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: HexEditor-macos-arm64
+          path: build/bin/
+          if-no-files-found: error
+          retention-days: 7
