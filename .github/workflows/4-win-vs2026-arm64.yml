@@ -3,21 +3,45 @@ name: win-VS2026-build (arm64)
 # 只手动触发：Actions 页面左侧点这个 → Run workflow，只跑本平台。
 on:
   workflow_dispatch:
+  # TEMP(verify): push 触发仅用于本次 8 平台验证，验证完成后移除，恢复纯手动。
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/4-win-vs2026-arm64.yml'
+      - 'src/**'
+      - 'uires/**'
+      - 'CMakeLists.txt'
+      - 'patches/**'
 
 jobs:
   build:
-    # 专用镜像：VS2026 工具链的原生 ARM64 runner。
+    # 专用镜像：VS2026 工具链的原生 ARM64 runner（只装 VS2026）。
     runs-on: windows-11-vs2026-arm
     timeout-minutes: 90
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Fetch pinned SOUI + apply patches
+        shell: bash
+        run: |
+          set -e
+          rm -rf soui4
+          git init soui4
+          git -C soui4 config core.autocrlf false
+          git -C soui4 remote add origin https://github.com/soui4/soui.git
+          git -C soui4 fetch --depth 1 origin 8a96e0745cdb7a01cecb8e26e00321b5f3a48c46
+          git -C soui4 checkout FETCH_HEAD
+          git -C soui4 config url."https://github.com/soui4/swinx".insteadOf "https://gitee.com/setoutsoft/swinx"
+          git -C soui4 -c core.autocrlf=false submodule update --init swinx
+          git -C soui4 apply ../patches/soui4-8a96e07-local.patch
+          git -C soui4/swinx apply ../../patches/swinx-992753b-local.patch
+
       - name: Setup MSVC (VS2026)
         uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: arm64              # arm64 host 用 arm64，不是 amd64_arm64
-          vsversion: '2026'        # 锁定 VS2026
+          # 同 x86_64 版：不要写 vsversion: '2026'，镜像只有 VS2026，省略自动选中。
 
       - name: Configure
         shell: bash

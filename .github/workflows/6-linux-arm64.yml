@@ -3,6 +3,15 @@ name: linux-build (arm64)
 # 只手动触发：Actions 页面左侧点这个 → Run workflow，只跑本平台。
 on:
   workflow_dispatch:
+  # TEMP(verify): push 触发仅用于本次 8 平台验证，验证完成后移除，恢复纯手动。
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/6-linux-arm64.yml'
+      - 'src/**'
+      - 'uires/**'
+      - 'CMakeLists.txt'
+      - 'patches/**'
 
 jobs:
   build:
@@ -11,6 +20,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Fetch pinned SOUI + apply patches
+        run: |
+          set -e
+          rm -rf soui4
+          git init soui4
+          git -C soui4 remote add origin https://github.com/soui4/soui.git
+          git -C soui4 fetch --depth 1 origin 8a96e0745cdb7a01cecb8e26e00321b5f3a48c46
+          git -C soui4 checkout FETCH_HEAD
+          git -C soui4 config url."https://github.com/soui4/swinx".insteadOf "https://gitee.com/setoutsoft/swinx"
+          git -C soui4 submodule update --init swinx
+          git -C soui4 apply ../patches/soui4-8a96e07-local.patch
+          git -C soui4/swinx apply ../../patches/swinx-992753b-local.patch
 
       - name: Install deps
         run: |
@@ -21,7 +43,8 @@ jobs:
             libfreetype-dev libxkbcommon-dev libdbus-1-dev
 
       - name: Configure
-        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+        # PNG_HARDWARE_OPTIMIZATIONS=OFF：SOUI 官方 CI 在 arm64 上关掉 libpng 的硬件优化路径。
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DPNG_HARDWARE_OPTIMIZATIONS=OFF
 
       - name: Build
         run: |
