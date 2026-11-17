@@ -34,8 +34,8 @@ jobs:
           git -C soui4 remote add origin https://github.com/soui4/soui.git
           git -C soui4 fetch --depth 1 origin 8a96e0745cdb7a01cecb8e26e00321b5f3a48c46
           git -C soui4 checkout FETCH_HEAD
-          git -C soui4 config url."https://github.com/soui4/swinx".insteadOf "https://gitee.com/setoutsoft/swinx"
-          git -C soui4 -c core.autocrlf=false submodule update --init swinx
+          git -C soui4 config url."https://github.com/soui4/swinx".insteadOf "https://gitee.com/setoutsoft/swinx.git"
+          ok=0; for i in 1 2 3; do if git -C soui4 -c core.autocrlf=false -c url."https://github.com/soui4/swinx".insteadOf="https://gitee.com/setoutsoft/swinx.git" submodule update --init swinx; then ok=1; break; fi; sleep 5; done; [ "$ok" = 1 ]
           sed -i 's/\r$//' patches/soui4-8a96e07-local.patch patches/swinx-992753b-local.patch
           git -C soui4 apply ../patches/soui4-8a96e07-local.patch
           git -C soui4/swinx apply ../../patches/swinx-992753b-local.patch
@@ -77,9 +77,11 @@ jobs:
         if: failure()
         shell: bash
         run: |
-          for f in soui-fetch.log build.log; do
-            if [ -f "$f" ]; then
-              { grep -inE 'error|fatal|failed|not found|no such' "$f" | head -25; echo '--- tail ---'; tail -10 "$f"; } | sed -e 's/%/%25/g' -e 's/\r//g' | while IFS= read -r line; do echo "::error::$line"; done
-            fi
-          done
+          set +e
+          if [ -f build.log ]; then
+            { grep -inE 'error|fatal|failed|undefined reference|not found|no such' build.log | head -40; echo '--- build.log tail ---'; tail -15 build.log; } | sed -e 's/%/%25/g' -e 's/\r//g' | while IFS= read -r line; do echo "::error::$line"; done
+          fi
+          if [ -f soui-fetch.log ]; then
+            { grep -inE 'error|fatal|failed|not found|no such' soui-fetch.log | head -8; echo '--- fetch tail ---'; tail -5 soui-fetch.log; } | sed -e 's/%/%25/g' -e 's/\r//g' | while IFS= read -r line; do echo "::error::$line"; done
+          fi
           true
