@@ -104,17 +104,21 @@ cmake --build build --config Release
 ```
 
 **SOUI 版本锁定 + 必需补丁（重要）**：本工程的构建验证基于 SOUI 提交 `8a96e0745cdb7a01cecb8e26e00321b5f3a48c46`（2026-10-18），
-其 `swinx` 子模块为 `992753b954222d3153aee12ec3b18ee0580c37b6`，**外加本仓库 `patches/` 目录里的两个补丁文件**。
+其 `swinx` 子模块为 `992753b954222d3153aee12ec3b18ee0580c37b6`，**外加本仓库 `patches/` 目录里的补丁文件**。
 该 SOUI 提交的原版代码在 Linux 上编不过：补丁修复了 SOUI 自身的两处宽窄字符编译错误
 （`utilities/audio/SPlaySound_unix.cpp`、`components/render-gdi/linux/render-gdi.cpp`），以及若干 Linux 渲染问题
 （菜单“标题\t快捷键”被画成方块、`SetMenuItemInfo` 丢弃 `MIIM_FTYPE`/`MIIM_STATE`、Skia 文本绘制性能等，每处修改均有注释）。
+第三个补丁（`soui4-8a96e07-msvc-arm64-webp-neon.patch`）修复 Windows ARM64 下的链接失败：SOUI 内置的 stb 版 `webpdec.h`
+只声明了 WebP 的 NEON DSP 初始化函数却从未定义，MSVC/ARM64 下 `imgdecoder-stb` 链接会报 LNK2019/LNK1120；
+该补丁让 MSVC 下不启用 NEON、改走 C 回退实现。
 更高版本的 SOUI 同样未经验证：截至 2026-11-16，SOUI 最新版（`9b32cec`）仍有同样的两处编译错误。
-克隆 SOUI 后，请先切到锁定版本并打上两个补丁（在 HexEditor 根目录执行，该目录下 `soui4/` 与 `patches/` 并列）：
+克隆 SOUI 后，请先切到锁定版本并打上补丁（在 HexEditor 根目录执行，该目录下 `soui4/` 与 `patches/` 并列）：
 
 ```bash
 git -C soui4 checkout 8a96e0745cdb7a01cecb8e26e00321b5f3a48c46
 git -C soui4 submodule update --init swinx
 git -C soui4 apply ../patches/soui4-8a96e07-local.patch
+git -C soui4 apply ../patches/soui4-8a96e07-msvc-arm64-webp-neon.patch
 git -C soui4/swinx apply ../../patches/swinx-992753b-local.patch
 ```
 

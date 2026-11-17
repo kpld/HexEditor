@@ -1,0 +1,31 @@
+Fix: keep WebP NEON off under MSVC (ARM64 link failure in imgdecoder-stb).
+
+SOUI's stb port of webpdec.h declares the WebP*NEON() DSP init functions
+but never defines them (upstream libwebp keeps them in separate *_neon.c
+files that were not ported). With _MSC_VER >= 1926 and _M_ARM64 the header
+defines WEBP_USE_NEON, so imgdecoder-stb fails to link on Windows ARM64
+(LNK2019 x7 + LNK1120). This patch makes the MSVC NEON branch opt-in via
+WEBP_MSVC_NEON (never defined here), so the C fallback DSP code is used.
+Inert on x86/x64 and on non-MSVC platforms. Apply after
+soui4-8a96e07-local.patch, from the soui4 directory:
+  git -C soui4 apply ../patches/soui4-8a96e07-msvc-arm64-webp-neon.patch
+
+diff --git a/third-part/stb/webpdec.h b/third-part/stb/webpdec.h
+index 014364c..7a11ea8 100644
+--- a/third-part/stb/webpdec.h
++++ b/third-part/stb/webpdec.h
+@@ -1985,7 +1985,13 @@ static WEBP_INLINE int _mm256_cvtsi256_si32(__m256i a) {
+ // inclusion of arm64_neon.h; Visual Studio 2019 includes this file in
+ // arm_neon.h. Compile errors were seen with Visual Studio 2019 16.4 with
+ // vtbl4_u8(); a fix was made in 16.6.
+-#if defined(_MSC_VER) &&                      \
++// SOUI local patch (HexEditor repo, patches/soui4-8a96e07-msvc-arm64-webp-neon.patch):
++// this stb port of webpdec declares the WebP*NEON() DSP init functions but
++// never defines them (in upstream libwebp they live in separate *_neon.c
++// compilation units that were not ported). Enabling WEBP_USE_NEON under
++// MSVC/ARM64 therefore fails to link (LNK2019/LNK1120 in imgdecoder-stb).
++// Keep NEON off for MSVC: the C fallback implementations are used instead.
++#if defined(_MSC_VER) && defined(WEBP_MSVC_NEON) && \
+     ((_MSC_VER >= 1700 && defined(_M_ARM)) || \
+      (_MSC_VER >= 1926 && (defined(_M_ARM64) || defined(_M_ARM64EC))))
+ #define WEBP_USE_NEON

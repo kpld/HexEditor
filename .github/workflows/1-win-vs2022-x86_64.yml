@@ -35,8 +35,9 @@ jobs:
           git -C soui4 checkout FETCH_HEAD
           git -C soui4 config url."https://github.com/soui4/swinx".insteadOf "https://gitee.com/setoutsoft/swinx.git"
           ok=0; for i in 1 2 3; do if git -C soui4 -c core.autocrlf=false -c url."https://github.com/soui4/swinx".insteadOf="https://gitee.com/setoutsoft/swinx.git" submodule update --init swinx; then ok=1; break; fi; sleep 5; done; [ "$ok" = 1 ]
-          sed -i 's/\r$//' patches/soui4-8a96e07-local.patch patches/swinx-992753b-local.patch
+          sed -i 's/\r$//' patches/soui4-8a96e07-local.patch patches/soui4-8a96e07-msvc-arm64-webp-neon.patch patches/swinx-992753b-local.patch
           git -C soui4 apply ../patches/soui4-8a96e07-local.patch
+          git -C soui4 apply ../patches/soui4-8a96e07-msvc-arm64-webp-neon.patch
           git -C soui4/swinx apply ../../patches/swinx-992753b-local.patch
 
       - name: Setup MSVC (VS2022)

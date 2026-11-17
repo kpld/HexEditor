@@ -131,17 +131,21 @@ Run: `build\bin\HexEditor.exe [file path]`
 > if they are missing, its error message prints both clone commands (GitHub and Gitee) — either source works, they are the same code base.
 
 **Pinned SOUI version + required patches (important):** this project is verified against SOUI commit `8a96e0745cdb7a01cecb8e26e00321b5f3a48c46` (2026-10-18),
-with its `swinx` submodule at `992753b954222d3153aee12ec3b18ee0580c37b6`, **plus the two patch files in this repo's `patches/` folder**.
+with its `swinx` submodule at `992753b954222d3153aee12ec3b18ee0580c37b6`, **plus the patch files in this repo's `patches/` folder**.
 A pristine checkout of that SOUI commit does not build on Linux: the patches fix two wide/narrow-character compile errors inside SOUI itself
 (`utilities/audio/SPlaySound_unix.cpp`, `components/render-gdi/linux/render-gdi.cpp`) and several Linux rendering bugs
 (menu "title\tshortcut" text drawn as boxes, `SetMenuItemInfo` dropping `MIIM_FTYPE`/`MIIM_STATE`, Skia text-out performance, and more — every hunk is commented).
+A third patch (`soui4-8a96e07-msvc-arm64-webp-neon.patch`) fixes a Windows ARM64 link failure: SOUI's stb port of `webpdec.h`
+declares the WebP NEON DSP init functions but never defines them, so `imgdecoder-stb` fails to link under MSVC/ARM64 (LNK2019/LNK1120);
+the patch keeps NEON off for MSVC and uses the C fallback instead.
 Newer SOUI revisions are also unverified: as of 2026-11-16, SOUI HEAD (`9b32cec`) still has the same two compile errors.
-After cloning SOUI, check out the pinned commits and apply both patches (run from the HexEditor root, where `soui4/` and `patches/` sit side by side):
+After cloning SOUI, check out the pinned commits and apply the patches (run from the HexEditor root, where `soui4/` and `patches/` sit side by side):
 
 ```bash
 git -C soui4 checkout 8a96e0745cdb7a01cecb8e26e00321b5f3a48c46
 git -C soui4 submodule update --init swinx
 git -C soui4 apply ../patches/soui4-8a96e07-local.patch
+git -C soui4 apply ../patches/soui4-8a96e07-msvc-arm64-webp-neon.patch
 git -C soui4/swinx apply ../../patches/swinx-992753b-local.patch
 ```
 
