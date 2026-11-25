@@ -10,6 +10,14 @@ Build and run have been verified on **Windows 11 x64 (MSVC 2022)** and **Ubuntu 
 launch by this repo's GitHub Actions workflow (see Section 4), though it has not had a hands-on interactive check on a real Mac yet.
 Other platforms go through the `swinx` adaptation layer; the source tree is organized for cross-platform builds.
 
+## Screenshots
+
+A 30.5 GB VirtualBox disk image (`Ubuntu.vdi`) open in the editor: memory-mapped I/O opens files of any size in milliseconds, and the data inspector on the right decodes the values at the cursor live.
+
+| Dark theme | Light theme |
+| --- | --- |
+| ![HexEditor — dark theme](docs/images/screenshot-dark.png) | ![HexEditor — light theme](docs/images/screenshot-light.png) |
+
 ---
 
 ## 1. Features

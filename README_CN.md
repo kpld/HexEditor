@@ -8,6 +8,14 @@
 已通过本仓库的 GitHub Actions 工作流验证编译与启动（尚无真机交互实测）；其他平台使用 `swinx` 适配层，
 源码已按跨平台组织。
 
+## 截图
+
+图中打开的是一个 30.5 GB 的 VirtualBox 磁盘镜像（`Ubuntu.vdi`）：内存映射 I/O 让任意大小的文件都是毫秒级打开，右侧数据检查器实时解码光标处的值。
+
+| 深色主题 | 浅色主题 |
+| --- | --- |
+| ![HexEditor 深色主题](docs/images/screenshot-dark.png) | ![HexEditor 浅色主题](docs/images/screenshot-light.png) |
+
 ---
 
 ## 1. 功能
